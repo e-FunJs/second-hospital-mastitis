@@ -1,0 +1,57 @@
+queries:
+  core_english:
+    description: "Broad English search for non-puerperal/non-lactational mastitis and granulomatous mastitis."
+    pubmed: >
+      ("non-puerperal mastitis"[Title/Abstract] OR "nonpuerperal mastitis"[Title/Abstract]
+      OR "non-lactational mastitis"[Title/Abstract] OR "nonlactational mastitis"[Title/Abstract]
+      OR "idiopathic granulomatous mastitis"[Title/Abstract]
+      OR "granulomatous mastitis"[Title/Abstract]
+      OR "granulomatous lobular mastitis"[Title/Abstract]
+      OR "periductal mastitis"[Title/Abstract]
+      OR "plasma cell mastitis"[Title/Abstract])
+
+  treatment_outcome:
+    description: "Treatment outcome, recurrence, remission, and response."
+    pubmed: >
+      (("idiopathic granulomatous mastitis"[Title/Abstract]
+      OR "granulomatous mastitis"[Title/Abstract]
+      OR "non-lactational mastitis"[Title/Abstract]
+      OR "non-puerperal mastitis"[Title/Abstract])
+      AND (treatment[Title/Abstract] OR therapy[Title/Abstract]
+      OR outcome[Title/Abstract] OR response[Title/Abstract]
+      OR remission[Title/Abstract] OR recurrence[Title/Abstract]
+      OR relapse[Title/Abstract]))
+
+  ultrasound:
+    description: "Ultrasound findings and imaging features."
+    pubmed: >
+      (("idiopathic granulomatous mastitis"[Title/Abstract]
+      OR "granulomatous mastitis"[Title/Abstract]
+      OR "non-lactational mastitis"[Title/Abstract])
+      AND (ultrasound[Title/Abstract] OR ultrasonography[Title/Abstract]
+      OR sonographic[Title/Abstract] OR imaging[Title/Abstract]))
+
+  therapies:
+    description: "Specific therapies: steroids, methotrexate, antibiotics, surgery, drainage."
+    pubmed: >
+      (("idiopathic granulomatous mastitis"[Title/Abstract]
+      OR "granulomatous mastitis"[Title/Abstract])
+      AND (corticosteroid[Title/Abstract] OR steroid[Title/Abstract]
+      OR methotrexate[Title/Abstract] OR antibiotic[Title/Abstract]
+      OR surgery[Title/Abstract] OR excision[Title/Abstract]
+      OR drainage[Title/Abstract] OR aspiration[Title/Abstract]))
+
+  chinese_terms:
+    description: "Chinese search terms for manual screening or Chinese literature databases."
+    terms:
+      - "非哺乳期乳腺炎"
+      - "非哺乳期乳腺炎 疗效"
+      - "肉芽肿性乳腺炎"
+      - "特发性肉芽肿性乳腺炎"
+      - "肉芽肿性小叶性乳腺炎"
+      - "浆细胞性乳腺炎"
+      - "乳腺炎 超声"
+      - "乳腺炎 复发"
+      - "乳腺炎 激素治疗"
+      - "乳腺炎 甲氨蝶呤"
+

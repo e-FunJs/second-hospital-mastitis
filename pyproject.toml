@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rag-medical"
+version = "0.1.0"
+description = "RAG knowledge base tooling for non-puerperal mastitis treatment-response prediction."
+requires-python = ">=3.9"
+dependencies = [
+  "pyyaml>=6.0.0",
+]
+
+[project.optional-dependencies]
+rag = [
+  "faiss-cpu>=1.8.0",
+  "sentence-transformers>=3.0.0",
+  "chromadb>=0.5.0",
+  "pypdf>=4.0.0",
+  "beautifulsoup4>=4.12.0",
+  "lxml>=5.0.0",
+]
+dev = [
+  "pytest>=8.0.0",
+  "ruff>=0.5.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100

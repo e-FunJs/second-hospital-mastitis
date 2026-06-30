@@ -1,0 +1,38 @@
+embedding:
+  phase_1:
+    mode: "metadata_and_abstract_only"
+    chunk_size_tokens: 350
+    chunk_overlap_tokens: 60
+    recommended_models:
+      english:
+        - "BAAI/bge-base-en-v1.5"
+        - "intfloat/e5-base-v2"
+      chinese_or_bilingual:
+        - "BAAI/bge-m3"
+        - "BAAI/bge-large-zh-v1.5"
+
+index:
+  phase_1:
+    backend: "faiss_or_chromadb"
+    similarity: "cosine"
+    metadata_fields:
+      - "pmid"
+      - "pmcid"
+      - "title"
+      - "journal"
+      - "year"
+      - "doi"
+      - "source_url"
+      - "study_type"
+      - "disease_type"
+      - "topic"
+      - "evidence_level"
+
+retrieval:
+  top_k: 8
+  require_citation: true
+  answer_policy:
+    - "Prefer guideline, consensus, systematic review, and cohort evidence."
+    - "Mention uncertainty when evidence conflicts."
+    - "Do not make patient-specific treatment recommendations from literature alone."
+

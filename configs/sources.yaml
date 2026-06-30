@@ -1,0 +1,35 @@
+sources:
+  pubmed:
+    enabled: true
+    type: metadata_and_abstract
+    base_url: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
+    allowed_use: "Search PubMed metadata and abstracts through NCBI E-utilities."
+    notes:
+      - "Use NCBI API key and email when available."
+      - "Do not scrape publisher full text."
+
+  pmc_open_access:
+    enabled: true
+    type: open_access_full_text
+    base_url: "https://pmc.ncbi.nlm.nih.gov/tools/openftlist/"
+    allowed_use: "Prefer PMC Open Access full text when full-text chunking is needed."
+    notes:
+      - "Track license and PMCID for each document."
+      - "Keep source URL/DOI for citation."
+
+  guidelines_and_consensus:
+    enabled: true
+    type: curated_web_or_pdf
+    allowed_use: "Manually curated guidelines, expert consensus, and society statements."
+    notes:
+      - "Download only when access and reuse are permitted."
+      - "Record title, organization, year, URL, and access date."
+
+  chinese_literature:
+    enabled: false
+    type: manual_or_database_export
+    allowed_use: "Use exported metadata where institutional access permits."
+    notes:
+      - "CNKI/Wanfang content usually requires institutional access and should not be scraped."
+      - "Manual literature registry can still record citation metadata."
+
