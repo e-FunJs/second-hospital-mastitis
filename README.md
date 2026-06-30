@@ -99,6 +99,25 @@ data/articles/raw/pmc_xml/PMC*.xml
 data/articles/processed/pmc_download_manifest.csv
 ```
 
+Parse downloaded PMC XML into paragraph-level article sections:
+
+```bash
+bash scripts/parse_pmc_xml.sh
+```
+
+For a small smoke test:
+
+```bash
+bash scripts/parse_pmc_xml.sh 3
+```
+
+This creates:
+
+```text
+data/articles/processed/article_sections.jsonl
+data/articles/processed/article_parse_manifest.csv
+```
+
 ## Recommended Workflow
 
 1. Use `search_pubmed.py` to create the first literature registry.
