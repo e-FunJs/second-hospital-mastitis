@@ -32,3 +32,7 @@ data/articles/processed/*
 
 outputs/*.csv
 outputs/*.jsonl
+
+# Local model weights. Keep directory placeholders only.
+models/bge/*
+!models/bge/.gitkeep

@@ -1,4 +1,6 @@
 embedding:
+  local_model_path: "models/bge/bge-m3"
+  model_name: "BAAI/bge-m3"
   phase_1:
     mode: "metadata_and_abstract_only"
     chunk_size_tokens: 350
