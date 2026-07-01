@@ -21,6 +21,17 @@ def normalize(value: str | None) -> str:
     return (value or "").strip()
 
 
+def normalize_pmcid(value: str | None) -> str:
+    pmcid = normalize(value).upper()
+    if not pmcid:
+        return ""
+    if pmcid.startswith("PMC"):
+        return pmcid
+    if pmcid.isdigit():
+        return f"PMC{pmcid}"
+    return pmcid
+
+
 def dedupe_key(row: dict[str, str]) -> tuple[str, str]:
     pmid = normalize(row.get("pmid"))
     doi = normalize(row.get("doi")).lower()
@@ -42,6 +53,7 @@ def read_source(path: Path, source_name: str) -> list[dict[str, str]]:
         rows = []
         for row in reader:
             row = {key: normalize(value) for key, value in row.items()}
+            row["pmcid"] = normalize_pmcid(row.get("pmcid"))
             row["_source_query"] = source_name
             rows.append(row)
         return rows
