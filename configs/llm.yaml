@@ -1,0 +1,5 @@
+llm:
+  backend: "local_hf"
+  model_name: "qwen3-8b"
+  local_model_path: "models/llm/qwen3-8b"
+  role: "second_layer_answer_generation"

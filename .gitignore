@@ -40,3 +40,7 @@ models/bge/*
 # Local first-layer RAG prompt/evidence outputs.
 data/rag/*
 !data/rag/.gitkeep
+
+# Local LLM weights. Keep directory placeholders only.
+models/llm/*
+!models/llm/.gitkeep
