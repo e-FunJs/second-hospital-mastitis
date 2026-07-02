@@ -15,8 +15,8 @@ from typing import Any, Callable, Iterable
 # -----------------------------------------------------------------------------
 # 配置对象
 # -----------------------------------------------------------------------------
-# 这里把 chunk 参数集中放在一个 dataclass 中，避免后续脚本里散落一堆魔法数字。
-# 注意：长度参数只是兜底规则；真正的切分依据仍然是 section 内的语义相似度低谷。
+# 这里把 chunk 参数集中放在一个 dataclass 
+# 注意: 真正的切分依据仍然是 section 内的语义相似度低谷
 
 
 @dataclass(frozen=True)
@@ -49,8 +49,8 @@ COMMON_ABBREVIATIONS = {
 # -----------------------------------------------------------------------------
 # 文本基础处理
 # -----------------------------------------------------------------------------
-# 这部分不接触模型，只负责把段落变成相对稳定的句子序列。医学英文里有 e.g.、Fig.、
-# et al. 等缩写，如果直接按句号切，会把一句话错误拆开，所以先保护常见缩写。
+# 这部分只负责把段落变成相对稳定的句子序列。医学英文里有 e.g.、Fig.、et al. 等缩写
+# 如果直接按句号切,会把一句话错误拆开,所以先保护常见缩写
 
 
 def normalize_space(text: str | None) -> str:
@@ -83,7 +83,7 @@ def split_sentences(text: str) -> list[str]:
 
 
 def word_count(text: str) -> int:
-    # 英文文献以空格分词为主；如果后续混入中文，这个正则也能把连续中文字符计入长度。
+    # 英文文献以空格分词为主; 如果后续混入中文,此正则也可把连续中文字符计入长度
     return len(re.findall(r"[A-Za-z0-9]+(?:[-'][A-Za-z0-9]+)?|[\u4e00-\u9fff]", text))
 
 
@@ -105,11 +105,11 @@ def percentile(values: list[float], q: float) -> float:
 
 
 # -----------------------------------------------------------------------------
-# 语义边界选择
+# 语义边界选择   ※※※※※※※※
 # -----------------------------------------------------------------------------
 # similarities[i] 表示 sentence[i] 与 sentence[i + 1] 附近窗口的语义相似度。
-# 当某个位置相似度明显低于本 section 的局部水平，并且不是太靠近 chunk 开头/结尾，
-# 就认为这里可能发生了话题转换，可以作为 chunk 边界。
+# 当某个位置相似度明显低于本 section 的局部水平,并且不是太靠近 chunk 开头/结尾,
+# 就认为这里可能发生了话题转换,可以作为 chunk 边界    
 
 
 def is_local_valley(scores: list[float], index: int, margin: float) -> bool:
@@ -148,7 +148,7 @@ def choose_semantic_boundaries(
         if remaining_sentence_count < config.min_sentences:
             continue
 
-        # 关键点：低于分位数阈值还不够，还要是局部低谷。
+        # 关键点：低于分位数阈值还不够,还要是局部低谷。
         # 这样可以避免 section 整体相似度偏低时被切得过碎。
         if score <= threshold and is_local_valley(similarities, similarity_index, config.valley_margin):
             boundaries.append(boundary_after)
@@ -160,7 +160,7 @@ def choose_semantic_boundaries(
 # -----------------------------------------------------------------------------
 # 段落记录展开与 chunk 记录构造
 # -----------------------------------------------------------------------------
-# 输入 JSONL 是段落级记录；chunk 时需要先展开到句子级，但输出必须保留原段落索引，
+# 输入 JSONL 是段落级记录；chunk 时需要先展开到句子级,但输出必须保留原段落索引,
 # 这样将来 RAG 命中 chunk 后仍然能追溯回原始 PMC XML 的 section 和 paragraph。
 
 
@@ -205,7 +205,7 @@ def merge_short_ranges(
         next_text = " ".join(item["text"] for item in sentence_items[start:end])
         combined_words = word_count(pending_text + " " + next_text)
 
-        # 关键点：语义边界优先，但太短的 chunk 检索价值低，因此只在合并后不过长时合并。
+        # 关键点：语义边界优先,但太短的 chunk 检索价值低,因此只在合并后不过长时合并。
         if word_count(pending_text) < config.min_words and combined_words <= config.max_words:
             pending_end = end
             continue
@@ -312,7 +312,7 @@ def build_chunk_records(
 # -----------------------------------------------------------------------------
 # BGE embedding 与相似度计算
 # -----------------------------------------------------------------------------
-# BGE-M3 只在这里用于计算相邻句子窗口的 embedding 相似度。它不生成新文本，
+# BGE-M3 只在这里用于计算相邻句子窗口的 embedding 相似度。它不生成新文本,
 # 也不改写文献内容；chunk 输出的 text 仍然全部来自原始解析文本。
 
 
@@ -355,8 +355,8 @@ def compute_gap_similarities(
 # -----------------------------------------------------------------------------
 # 文件读写与分组
 # -----------------------------------------------------------------------------
-# 分组粒度是 pmcid + section。section 是硬边界；不同 section 不互相合并，
-# 因为 Methods、Results、Discussion 的信息角色不同，强行合并会降低医学证据可解释性。
+# 分组粒度是 pmcid + section。section 是硬边界；不同 section 不互相合并,
+# 因为 Methods、Results、Discussion 的信息角色不同,强行合并会降低医学证据可解释性。
 
 
 def read_jsonl(path: Path) -> list[dict[str, Any]]:
@@ -408,7 +408,7 @@ def write_manifest(path: Path, rows: list[dict[str, Any]]) -> None:
 # 主流程
 # -----------------------------------------------------------------------------
 # CLI 流程：读取 paragraph JSONL -> 分组 -> BGE 计算相似度 -> 选择语义边界 -> 写 chunk JSONL。
-# 这里故意不把向量库写入本脚本，chunk 与 embedding index 是两个阶段，便于调参和复查。
+# 这里故意不把向量库写入本脚本,chunk 与 embedding index 是两个阶段,便于调参和复查。
 
 
 def load_sentence_transformer(model_path: Path, device: str):
@@ -424,7 +424,7 @@ def resolve_device(device: str) -> str:
         import torch
 
         return "cuda" if torch.cuda.is_available() else "cpu"
-    except Exception:  # noqa: BLE001 - torch 不可用时退回 CPU，并让模型加载阶段给出明确错误。
+    except Exception:  # noqa: BLE001 - torch 不可用时退回 CPU,并让模型加载阶段给出明确错误。
         return "cpu"
 
 
@@ -473,7 +473,7 @@ def chunk_records(
                 f"[{group_index}/{len(selected_groups)}] {pmcid} | {section}: "
                 f"sentences={len(sentences)} boundaries={len(boundaries)} chunks={len(chunks)}"
             )
-        except Exception as exc:  # noqa: BLE001 - manifest 需要记录失败分组，方便后续定位。
+        except Exception as exc:  # noqa: BLE001 - manifest 需要记录失败分组,方便后续定位。
             row["status"] = "failed"
             row["error"] = f"{type(exc).__name__}: {exc}"
             print(f"[{group_index}/{len(selected_groups)}] {pmcid} | {section}: failed: {row['error']}")
