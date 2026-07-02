@@ -2,4 +2,11 @@ llm:
   backend: "local_hf"
   model_name: "qwen3-8b"
   local_model_path: "models/llm/qwen3-8b"
+  quantization: "8bit"
   role: "second_layer_answer_generation"
+  generation:
+    max_new_tokens: 768
+    temperature: 0.2
+    top_p: 0.9
+    repetition_penalty: 1.05
+    do_sample: false
