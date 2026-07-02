@@ -36,3 +36,7 @@ outputs/*.jsonl
 # Local model weights. Keep directory placeholders only.
 models/bge/*
 !models/bge/.gitkeep
+
+# Local first-layer RAG prompt/evidence outputs.
+data/rag/*
+!data/rag/.gitkeep
