@@ -69,6 +69,7 @@ def build_metadata_record(chunk: dict[str, Any], row_index: int) -> dict[str, An
     return {
         "row_index": row_index,
         "chunk_id": chunk.get("chunk_id", ""),
+        "source_type": chunk.get("source_type", "pmc_full_text"),
         "pmcid": chunk.get("pmcid", ""),
         "pmid": chunk.get("pmid", ""),
         "doi": chunk.get("doi", ""),
@@ -77,6 +78,7 @@ def build_metadata_record(chunk: dict[str, Any], row_index: int) -> dict[str, An
         "year": chunk.get("year", ""),
         "section": chunk.get("section", ""),
         "chunk_index": chunk.get("chunk_index", ""),
+        "source_url": chunk.get("source_url", ""),
         "source_path": chunk.get("source_path", ""),
         "source_paragraph_indices": chunk.get("source_paragraph_indices", []),
         "sentence_start": chunk.get("sentence_start", ""),
@@ -229,7 +231,7 @@ def build_embeddings(
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Build BGE embeddings for semantic article chunks.")
-    parser.add_argument("--input", type=Path, default=Path("data/articles/processed/article_chunks.jsonl"))
+    parser.add_argument("--input", type=Path, default=Path("data/articles/processed/rag_chunks.jsonl"))
     parser.add_argument("--embedding-out", type=Path, default=Path("data/index/chunk_embeddings.npy"))
     parser.add_argument("--metadata-out", type=Path, default=Path("data/index/chunk_metadata.jsonl"))
     parser.add_argument("--manifest", type=Path, default=Path("data/index/embedding_manifest.json"))

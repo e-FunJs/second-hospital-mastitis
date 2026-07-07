@@ -38,6 +38,7 @@ def test_build_embedding_text_uses_semantic_fields_only() -> None:
 def test_build_metadata_record_preserves_row_alignment_and_source_fields() -> None:
     chunk = {
         "chunk_id": "PMC1::Abstract::001",
+        "source_type": "pubmed_abstract",
         "pmcid": "PMC1",
         "pmid": "123",
         "doi": "10.1/example",
@@ -53,6 +54,7 @@ def test_build_metadata_record_preserves_row_alignment_and_source_fields() -> No
 
     assert metadata["row_index"] == 7
     assert metadata["chunk_id"] == "PMC1::Abstract::001"
+    assert metadata["source_type"] == "pubmed_abstract"
     assert metadata["source_paragraph_indices"] == [1, 2]
     assert metadata["text"] == "Example chunk text."
 

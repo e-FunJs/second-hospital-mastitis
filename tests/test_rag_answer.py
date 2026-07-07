@@ -16,6 +16,7 @@ def sample_search_results() -> list[dict]:
             "rank": 1,
             "score": 0.81,
             "chunk_id": "PMC1::Treatment::001",
+            "source_type": "pmc_full_text",
             "pmcid": "PMC1",
             "pmid": "123",
             "doi": "10.1/example",
@@ -29,6 +30,7 @@ def sample_search_results() -> list[dict]:
             "rank": 2,
             "score": 0.75,
             "chunk_id": "PMC2::Ultrasound::001",
+            "source_type": "pubmed_abstract",
             "pmcid": "PMC2",
             "pmid": "456",
             "doi": "10.2/example",
@@ -47,6 +49,8 @@ def test_make_evidence_records_adds_stable_evidence_ids() -> None:
     assert evidence[0]["evidence_id"] == "E1"
     assert evidence[1]["evidence_id"] == "E2"
     assert evidence[0]["chunk_id"] == "PMC1::Treatment::001"
+    assert evidence[0]["source_type"] == "pmc_full_text"
+    assert evidence[1]["source_type"] == "pubmed_abstract"
     assert evidence[1]["citation"] == "PMC2 | 2026 | Ultrasound study | Diagnosis > Ultrasonography"
 
 

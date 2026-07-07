@@ -7,7 +7,7 @@ from collections import OrderedDict
 from pathlib import Path
 
 
-SOURCE_FILES = OrderedDict(
+LEGACY_SOURCE_FILES = OrderedDict(
     [
         ("core", "core.csv"),
         ("outcome", "outcome.csv"),
@@ -17,8 +17,27 @@ SOURCE_FILES = OrderedDict(
 )
 
 
+# -----------------------------------------------------------------------------
+# 输入文件发现
+# -----------------------------------------------------------------------------
+# 现在 PubMed 检索脚本会输出 pubmed_<query_key>.csv。这里优先合并这些文件，
+# 这样新增 query 不需要再同步修改 merge 脚本；如果旧项目只有 core.csv 等文件，
+# 再回退到 legacy 文件名。
+
+
 def normalize(value: str | None) -> str:
     return (value or "").strip()
+
+
+def discover_source_files(source_dir: Path) -> OrderedDict[str, str]:
+    pubmed_files = sorted(source_dir.glob("pubmed_*.csv"))
+    if pubmed_files:
+        return OrderedDict((path.stem.removeprefix("pubmed_"), path.name) for path in pubmed_files)
+    return OrderedDict(
+        (name, filename)
+        for name, filename in LEGACY_SOURCE_FILES.items()
+        if (source_dir / filename).exists()
+    )
 
 
 def normalize_pmcid(value: str | None) -> str:
@@ -62,7 +81,9 @@ def read_source(path: Path, source_name: str) -> list[dict[str, str]]:
 def merge_rows(source_dir: Path) -> list[dict[str, str]]:
     merged: OrderedDict[tuple[str, str], dict[str, str]] = OrderedDict()
 
-    for source_name, filename in SOURCE_FILES.items():
+    source_files = discover_source_files(source_dir)
+
+    for source_name, filename in source_files.items():
         for row in read_source(source_dir / filename, source_name):
             key = dedupe_key(row)
             if key not in merged:
@@ -75,7 +96,7 @@ def merge_rows(source_dir: Path) -> list[dict[str, str]]:
             existing = merged[key]
             existing_sources = set(existing.get("source_queries", "").split(";"))
             existing_sources.add(source_name)
-            ordered_sources = [name for name in SOURCE_FILES if name in existing_sources]
+            ordered_sources = [name for name in source_files if name in existing_sources]
             existing["source_queries"] = ";".join(ordered_sources)
             existing["source_query_count"] = str(len(ordered_sources))
 
@@ -142,7 +163,7 @@ def write_summary(rows: list[dict[str, str]], out_path: Path) -> None:
         "",
     ]
 
-    for source in SOURCE_FILES:
+    for source in sorted({name for row in rows for name in row.get("source_queries", "").split(";") if name}):
         count = sum(1 for row in rows if source in row.get("source_queries", "").split(";"))
         lines.append(f"- {source}: {count}")
 

@@ -43,6 +43,7 @@ def make_evidence_records(search_results: list[dict[str, Any]]) -> list[dict[str
             "rank": result.get("rank", index),
             "score": result.get("score", ""),
             "chunk_id": result.get("chunk_id", ""),
+            "source_type": result.get("source_type", ""),
             "pmcid": result.get("pmcid", ""),
             "pmid": result.get("pmid", ""),
             "doi": result.get("doi", ""),
@@ -50,6 +51,7 @@ def make_evidence_records(search_results: list[dict[str, Any]]) -> list[dict[str
             "journal": result.get("journal", ""),
             "year": result.get("year", ""),
             "section": result.get("section", ""),
+            "source_url": result.get("source_url", ""),
             "citation": make_citation(result),
             "text": result.get("text", ""),
         }

@@ -18,7 +18,7 @@ mkdir -p data/index
 
 CMD=(
   python -m rag_medical.build_embeddings
-  --input data/articles/processed/article_chunks.jsonl
+  --input data/articles/processed/rag_chunks.jsonl
   --embedding-out data/index/chunk_embeddings.npy
   --metadata-out data/index/chunk_metadata.jsonl
   --manifest data/index/embedding_manifest.json
