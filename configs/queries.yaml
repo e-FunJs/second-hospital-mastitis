@@ -1,4 +1,17 @@
 queries:
+  disease_synonyms:
+    description: "Hospital-provided disease synonyms for broad RAG literature expansion."
+    pubmed: >
+      ("granulomatous lobular mastitis"[Title/Abstract]
+      OR "granulomatous mastitis"[Title/Abstract]
+      OR "periductal mastitis"[Title/Abstract]
+      OR "mammary duct ectasia"[Title/Abstract]
+      OR "non-puerperal mastitis"[Title/Abstract]
+      OR "nonpuerperal mastitis"[Title/Abstract]
+      OR "plasma cell mastitis"[Title/Abstract]
+      OR "non-lactational mastitis"[Title/Abstract]
+      OR "nonlactational mastitis"[Title/Abstract])
+
   core_english:
     description: "Broad English search for non-puerperal/non-lactational mastitis and granulomatous mastitis."
     pubmed: >
@@ -8,6 +21,7 @@ queries:
       OR "granulomatous mastitis"[Title/Abstract]
       OR "granulomatous lobular mastitis"[Title/Abstract]
       OR "periductal mastitis"[Title/Abstract]
+      OR "mammary duct ectasia"[Title/Abstract]
       OR "plasma cell mastitis"[Title/Abstract])
 
   treatment_outcome:
@@ -15,8 +29,12 @@ queries:
     pubmed: >
       (("idiopathic granulomatous mastitis"[Title/Abstract]
       OR "granulomatous mastitis"[Title/Abstract]
+      OR "granulomatous lobular mastitis"[Title/Abstract]
       OR "non-lactational mastitis"[Title/Abstract]
-      OR "non-puerperal mastitis"[Title/Abstract])
+      OR "non-puerperal mastitis"[Title/Abstract]
+      OR "periductal mastitis"[Title/Abstract]
+      OR "mammary duct ectasia"[Title/Abstract]
+      OR "plasma cell mastitis"[Title/Abstract])
       AND (treatment[Title/Abstract] OR therapy[Title/Abstract]
       OR outcome[Title/Abstract] OR response[Title/Abstract]
       OR remission[Title/Abstract] OR recurrence[Title/Abstract]
@@ -27,7 +45,12 @@ queries:
     pubmed: >
       (("idiopathic granulomatous mastitis"[Title/Abstract]
       OR "granulomatous mastitis"[Title/Abstract]
-      OR "non-lactational mastitis"[Title/Abstract])
+      OR "granulomatous lobular mastitis"[Title/Abstract]
+      OR "non-lactational mastitis"[Title/Abstract]
+      OR "non-puerperal mastitis"[Title/Abstract]
+      OR "periductal mastitis"[Title/Abstract]
+      OR "mammary duct ectasia"[Title/Abstract]
+      OR "plasma cell mastitis"[Title/Abstract])
       AND (ultrasound[Title/Abstract] OR ultrasonography[Title/Abstract]
       OR sonographic[Title/Abstract] OR imaging[Title/Abstract]))
 
@@ -35,7 +58,13 @@ queries:
     description: "Specific therapies: steroids, methotrexate, antibiotics, surgery, drainage."
     pubmed: >
       (("idiopathic granulomatous mastitis"[Title/Abstract]
-      OR "granulomatous mastitis"[Title/Abstract])
+      OR "granulomatous mastitis"[Title/Abstract]
+      OR "granulomatous lobular mastitis"[Title/Abstract]
+      OR "non-lactational mastitis"[Title/Abstract]
+      OR "non-puerperal mastitis"[Title/Abstract]
+      OR "periductal mastitis"[Title/Abstract]
+      OR "mammary duct ectasia"[Title/Abstract]
+      OR "plasma cell mastitis"[Title/Abstract])
       AND (corticosteroid[Title/Abstract] OR steroid[Title/Abstract]
       OR methotrexate[Title/Abstract] OR antibiotic[Title/Abstract]
       OR surgery[Title/Abstract] OR excision[Title/Abstract]
@@ -50,6 +79,7 @@ queries:
       OR "non-lactational mastitis"[Title/Abstract]
       OR "non-puerperal mastitis"[Title/Abstract]
       OR "periductal mastitis"[Title/Abstract]
+      OR "mammary duct ectasia"[Title/Abstract]
       OR "plasma cell mastitis"[Title/Abstract])
       AND (rifampin[Title/Abstract] OR rifampicin[Title/Abstract]
       OR "anti-tubercular"[Title/Abstract] OR antitubercular[Title/Abstract]
@@ -65,6 +95,7 @@ queries:
       OR "non-lactational mastitis"[Title/Abstract]
       OR "non-puerperal mastitis"[Title/Abstract]
       OR "periductal mastitis"[Title/Abstract]
+      OR "mammary duct ectasia"[Title/Abstract]
       OR "plasma cell mastitis"[Title/Abstract])
       AND (duration[Title/Abstract] OR "treatment course"[Title/Abstract]
       OR "course of treatment"[Title/Abstract] OR "time to remission"[Title/Abstract]
@@ -79,7 +110,10 @@ queries:
       OR "granulomatous mastitis"[Title/Abstract]
       OR "granulomatous lobular mastitis"[Title/Abstract]
       OR "non-lactational mastitis"[Title/Abstract]
-      OR "non-puerperal mastitis"[Title/Abstract])
+      OR "non-puerperal mastitis"[Title/Abstract]
+      OR "periductal mastitis"[Title/Abstract]
+      OR "mammary duct ectasia"[Title/Abstract]
+      OR "plasma cell mastitis"[Title/Abstract])
       AND ("drug therapy"[Title/Abstract] OR medication[Title/Abstract]
       OR antibiotic[Title/Abstract] OR antibiotics[Title/Abstract]
       OR corticosteroid[Title/Abstract] OR steroid[Title/Abstract]
@@ -120,4 +154,9 @@ queries:
       - "乳腺炎 治疗周期"
       - "乳腺炎 药物治疗"
       - "导管周围乳腺炎 治疗"
+      - "mammary duct ectasia"
+      - "non-puerperal mastitis"
+      - "非泌乳期乳腺炎"
+      - "乳腺导管扩张症"
+      - "导管周围乳腺炎"
 
