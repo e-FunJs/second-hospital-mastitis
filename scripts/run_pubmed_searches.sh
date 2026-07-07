@@ -17,29 +17,14 @@ fi
 mkdir -p data/registry/raw
 
 python -m rag_medical.search_pubmed \
-  --query-key core_english \
+  --all \
   --max-results "${MAX_RESULTS}" \
-  --out data/registry/raw/core.csv
-
-python -m rag_medical.search_pubmed \
-  --query-key treatment_outcome \
-  --max-results "${MAX_RESULTS}" \
-  --out data/registry/raw/outcome.csv
-
-python -m rag_medical.search_pubmed \
-  --query-key ultrasound \
-  --max-results "${MAX_RESULTS}" \
-  --out data/registry/raw/ultrasound.csv
-
-python -m rag_medical.search_pubmed \
-  --query-key therapies \
-  --max-results "${MAX_RESULTS}" \
-  --out data/registry/raw/therapy.csv
+  --out data/registry/raw/pubmed.csv
 
 echo
 echo "Generated registry files:"
-ls -lh data/registry/raw/core.csv data/registry/raw/outcome.csv data/registry/raw/ultrasound.csv data/registry/raw/therapy.csv
+find data/registry/raw -maxdepth 1 -type f -name 'pubmed_*.csv' -printf '%f\n' | sort
 
 echo
 echo "Next step:"
-echo "Use the generated CSV files to identify PMID/PMCID records, then fetch PMC Open Access full text."
+echo "Run scripts/merge_registry.sh, then fetch PMC Open Access full text."

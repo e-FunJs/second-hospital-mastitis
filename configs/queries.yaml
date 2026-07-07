@@ -41,6 +41,67 @@ queries:
       OR surgery[Title/Abstract] OR excision[Title/Abstract]
       OR drainage[Title/Abstract] OR aspiration[Title/Abstract]))
 
+  rifampin:
+    description: "Rifampin/rifampicin and anti-tubercular or Corynebacterium-oriented therapy in mastitis."
+    pubmed: >
+      (("idiopathic granulomatous mastitis"[Title/Abstract]
+      OR "granulomatous mastitis"[Title/Abstract]
+      OR "granulomatous lobular mastitis"[Title/Abstract]
+      OR "non-lactational mastitis"[Title/Abstract]
+      OR "non-puerperal mastitis"[Title/Abstract]
+      OR "periductal mastitis"[Title/Abstract]
+      OR "plasma cell mastitis"[Title/Abstract])
+      AND (rifampin[Title/Abstract] OR rifampicin[Title/Abstract]
+      OR "anti-tubercular"[Title/Abstract] OR antitubercular[Title/Abstract]
+      OR tuberculosis[Title/Abstract] OR Corynebacterium[Title/Abstract]
+      OR "Corynebacterium kroppenstedtii"[Title/Abstract]))
+
+  duration:
+    description: "Treatment duration, course length, time to remission, and follow-up for mastitis therapy."
+    pubmed: >
+      (("idiopathic granulomatous mastitis"[Title/Abstract]
+      OR "granulomatous mastitis"[Title/Abstract]
+      OR "granulomatous lobular mastitis"[Title/Abstract]
+      OR "non-lactational mastitis"[Title/Abstract]
+      OR "non-puerperal mastitis"[Title/Abstract]
+      OR "periductal mastitis"[Title/Abstract]
+      OR "plasma cell mastitis"[Title/Abstract])
+      AND (duration[Title/Abstract] OR "treatment course"[Title/Abstract]
+      OR "course of treatment"[Title/Abstract] OR "time to remission"[Title/Abstract]
+      OR "time-to-remission"[Title/Abstract] OR follow-up[Title/Abstract]
+      OR "long-term"[Title/Abstract] OR recurrence[Title/Abstract]
+      OR relapse[Title/Abstract]))
+
+  drug_therapy:
+    description: "Medication-focused therapy for granulomatous and non-puerperal mastitis."
+    pubmed: >
+      (("idiopathic granulomatous mastitis"[Title/Abstract]
+      OR "granulomatous mastitis"[Title/Abstract]
+      OR "granulomatous lobular mastitis"[Title/Abstract]
+      OR "non-lactational mastitis"[Title/Abstract]
+      OR "non-puerperal mastitis"[Title/Abstract])
+      AND ("drug therapy"[Title/Abstract] OR medication[Title/Abstract]
+      OR antibiotic[Title/Abstract] OR antibiotics[Title/Abstract]
+      OR corticosteroid[Title/Abstract] OR steroid[Title/Abstract]
+      OR prednisolone[Title/Abstract] OR prednisone[Title/Abstract]
+      OR methotrexate[Title/Abstract] OR azathioprine[Title/Abstract]
+      OR immunosuppressive[Title/Abstract] OR immunosuppression[Title/Abstract]
+      OR colchicine[Title/Abstract]))
+
+  periductal_tx:
+    description: "Treatment of periductal/plasma cell mastitis and duct-related non-lactational mastitis."
+    pubmed: >
+      (("periductal mastitis"[Title/Abstract]
+      OR "plasma cell mastitis"[Title/Abstract]
+      OR "duct ectasia"[Title/Abstract]
+      OR "mammary duct ectasia"[Title/Abstract]
+      OR "subareolar abscess"[Title/Abstract])
+      AND (treatment[Title/Abstract] OR therapy[Title/Abstract]
+      OR antibiotic[Title/Abstract] OR antibiotics[Title/Abstract]
+      OR surgery[Title/Abstract] OR excision[Title/Abstract]
+      OR drainage[Title/Abstract] OR recurrence[Title/Abstract]
+      OR remission[Title/Abstract]))
+
   chinese_terms:
     description: "Chinese search terms for manual screening or Chinese literature databases."
     terms:
@@ -54,4 +115,9 @@ queries:
       - "乳腺炎 复发"
       - "乳腺炎 激素治疗"
       - "乳腺炎 甲氨蝶呤"
+      - "乳腺炎 利福平"
+      - "肉芽肿性乳腺炎 利福平"
+      - "乳腺炎 治疗周期"
+      - "乳腺炎 药物治疗"
+      - "导管周围乳腺炎 治疗"
 
