@@ -86,6 +86,31 @@ queries:
       OR tuberculosis[Title/Abstract] OR Corynebacterium[Title/Abstract]
       OR "Corynebacterium kroppenstedtii"[Title/Abstract]))
 
+  anti_tb_drugs:
+    description: "Ethambutol/isoniazid anti-tubercular drug therapy constrained to mastitis-related breast disease."
+    pubmed: >
+      (("idiopathic granulomatous mastitis"[Title/Abstract]
+      OR "granulomatous mastitis"[Title/Abstract]
+      OR "granulomatous lobular mastitis"[Title/Abstract]
+      OR "non-lactational mastitis"[Title/Abstract]
+      OR "non-puerperal mastitis"[Title/Abstract]
+      OR "periductal mastitis"[Title/Abstract]
+      OR "mammary duct ectasia"[Title/Abstract]
+      OR "plasma cell mastitis"[Title/Abstract]
+      OR "tuberculous mastitis"[Title/Abstract]
+      OR "tubercular mastitis"[Title/Abstract]
+      OR "breast tuberculosis"[Title/Abstract]
+      OR "mammary tuberculosis"[Title/Abstract]
+      OR mastitis[Title/Abstract])
+      AND (ethambutol[Title/Abstract] OR ethylaminobutanol[Title/Abstract]
+      OR isoniazid[Title/Abstract] OR "anti-tubercular"[Title/Abstract]
+      OR antitubercular[Title/Abstract] OR "anti tuberculosis"[Title/Abstract]
+      OR "anti-tuberculosis"[Title/Abstract])
+      AND (treatment[Title/Abstract] OR therapy[Title/Abstract]
+      OR medication[Title/Abstract] OR "drug therapy"[Title/Abstract]
+      OR regimen[Title/Abstract] OR response[Title/Abstract]
+      OR remission[Title/Abstract] OR recurrence[Title/Abstract]))
+
   duration:
     description: "Treatment duration, course length, time to remission, and follow-up for mastitis therapy."
     pubmed: >
@@ -160,3 +185,14 @@ queries:
       - "乳腺导管扩张症"
       - "导管周围乳腺炎"
 
+      - "乳腺炎 乙胺丁醇"
+      - "肉芽肿性乳腺炎 乙胺丁醇"
+      - "乳腺炎 异烟肼"
+      - "肉芽肿性乳腺炎 异烟肼"
+      - "ethambutol mastitis treatment"
+      - "isoniazid mastitis treatment"
+      - "乳腺结核 乙胺丁醇"
+      - "乳腺结核 异烟肼"
+      - "tuberculous mastitis ethambutol treatment"
+      - "tuberculous mastitis isoniazid treatment"
+      - "breast tuberculosis ethambutol isoniazid"

@@ -47,3 +47,29 @@ def test_load_pubmed_queries_includes_hospital_disease_synonyms() -> None:
     for key in disease_query_keys:
         for term in expected_terms:
             assert term in queries[key].lower()
+
+
+def test_load_pubmed_queries_includes_targeted_anti_tubercular_drug_terms() -> None:
+    queries = load_pubmed_queries(Path("configs/queries.yaml"))
+
+    assert "anti_tb_drugs" in queries
+    query = queries["anti_tb_drugs"].lower()
+
+    for drug_term in ["ethambutol", "ethylaminobutanol", "isoniazid"]:
+        assert drug_term in query
+
+    for disease_term in [
+        "granulomatous mastitis",
+        "non-puerperal mastitis",
+        "periductal mastitis",
+        "plasma cell mastitis",
+        "mammary duct ectasia",
+        "tuberculous mastitis",
+        "tubercular mastitis",
+        "breast tuberculosis",
+        "mammary tuberculosis",
+    ]:
+        assert disease_term in query
+
+    for treatment_term in ["treatment", "therapy"]:
+        assert treatment_term in query
