@@ -111,6 +111,39 @@ queries:
       OR regimen[Title/Abstract] OR response[Title/Abstract]
       OR remission[Title/Abstract] OR recurrence[Title/Abstract]))
 
+  anti_tb_combination:
+    description: "Rifampin/rifampicin, isoniazid, and ethambutol combination anti-tubercular therapy for mastitis and breast tuberculosis."
+    pubmed: >
+      ((("idiopathic granulomatous mastitis"[Title/Abstract]
+      OR "granulomatous mastitis"[Title/Abstract]
+      OR "granulomatous lobular mastitis"[Title/Abstract]
+      OR "non-lactational mastitis"[Title/Abstract]
+      OR "non-puerperal mastitis"[Title/Abstract]
+      OR "periductal mastitis"[Title/Abstract]
+      OR "mammary duct ectasia"[Title/Abstract]
+      OR "plasma cell mastitis"[Title/Abstract]
+      OR "tuberculous mastitis"[Title/Abstract]
+      OR "tubercular mastitis"[Title/Abstract]
+      OR "breast tuberculosis"[Title/Abstract]
+      OR "mammary tuberculosis"[Title/Abstract]
+      OR mastitis[Title/Abstract])
+      AND (rifampin[Title/Abstract] OR rifampicin[Title/Abstract])
+      AND isoniazid[Title/Abstract]
+      AND ethambutol[Title/Abstract])
+      OR (("idiopathic granulomatous mastitis"[Title/Abstract]
+      OR "granulomatous mastitis"[Title/Abstract]
+      OR "granulomatous lobular mastitis"[Title/Abstract]
+      OR "non-puerperal mastitis"[Title/Abstract]
+      OR "tuberculous mastitis"[Title/Abstract]
+      OR "tubercular mastitis"[Title/Abstract]
+      OR "breast tuberculosis"[Title/Abstract]
+      OR "mammary tuberculosis"[Title/Abstract])
+      AND ("anti-tubercular"[Title/Abstract] OR antitubercular[Title/Abstract]
+      OR "anti tuberculosis"[Title/Abstract] OR "anti-tuberculosis"[Title/Abstract]
+      OR antimycobacterial[Title/Abstract])
+      AND ("combination therapy"[Title/Abstract] OR "triple therapy"[Title/Abstract]
+      OR regimen[Title/Abstract] OR "multidrug therapy"[Title/Abstract])))
+
   duration:
     description: "Treatment duration, course length, time to remission, and follow-up for mastitis therapy."
     pubmed: >
@@ -196,3 +229,13 @@ queries:
       - "tuberculous mastitis ethambutol treatment"
       - "tuberculous mastitis isoniazid treatment"
       - "breast tuberculosis ethambutol isoniazid"
+      - "利福平 异烟肼 乙胺丁醇 乳腺炎"
+      - "利福平 异烟肼 乙胺丁醇 肉芽肿性乳腺炎"
+      - "利福平 异烟肼 乙胺丁醇 乳腺结核"
+      - "rifampicin isoniazid ethambutol mastitis"
+      - "rifampin isoniazid ethambutol mastitis"
+      - "rifampicin isoniazid ethambutol granulomatous mastitis"
+      - "rifampicin isoniazid ethambutol tuberculous mastitis"
+      - "rifampicin isoniazid ethambutol breast tuberculosis"
+      - "anti-tubercular triple therapy mastitis"
+      - "anti-tuberculosis combination therapy mastitis"

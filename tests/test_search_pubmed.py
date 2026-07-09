@@ -73,3 +73,28 @@ def test_load_pubmed_queries_includes_targeted_anti_tubercular_drug_terms() -> N
 
     for treatment_term in ["treatment", "therapy"]:
         assert treatment_term in query
+
+
+def test_load_pubmed_queries_includes_anti_tubercular_combination_terms() -> None:
+    queries = load_pubmed_queries(Path("configs/queries.yaml"))
+
+    assert "anti_tb_combination" in queries
+    query = queries["anti_tb_combination"].lower()
+
+    for drug_term in ["rifampin", "rifampicin", "isoniazid", "ethambutol"]:
+        assert drug_term in query
+
+    for disease_term in [
+        "granulomatous mastitis",
+        "non-puerperal mastitis",
+        "periductal mastitis",
+        "plasma cell mastitis",
+        "tuberculous mastitis",
+        "tubercular mastitis",
+        "breast tuberculosis",
+        "mammary tuberculosis",
+    ]:
+        assert disease_term in query
+
+    for regimen_term in ["combination therapy", "triple therapy", "regimen"]:
+        assert regimen_term in query
