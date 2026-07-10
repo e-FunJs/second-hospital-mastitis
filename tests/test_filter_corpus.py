@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import csv
 
-from rag_medical.filter_corpus import Decision, classify_record, filter_chunks, write_csv_records
+from rag_medical.filter_corpus import Decision, classify_record, filter_chunks, write_csv_records, write_registry_view_records
 
 
 def test_classify_record_includes_human_recurrent_granulomatous_mastitis_treatment() -> None:
@@ -171,3 +171,41 @@ def test_write_csv_records_flattens_multiline_cells(tmp_path) -> None:
 
     assert "first line\nsecond line" not in raw_text
     assert rows[0]["abstract"] == "first line second line third line"
+
+
+def test_write_registry_view_records_exports_short_human_readable_file(tmp_path) -> None:
+    out_path = tmp_path / "view.csv"
+    long_abstract = "A" * 700
+
+    write_registry_view_records(
+        out_path,
+        records=[
+            {
+                "pmid": "1",
+                "pmcid": "PMC1",
+                "title": "Granulomatous mastitis treatment",
+                "year": "2026",
+                "journal": "Breast Journal",
+                "abstract": long_abstract,
+                "filter_decision": "include",
+                "filter_include_score": 10,
+            }
+        ],
+    )
+
+    with out_path.open("r", encoding="utf-8-sig", newline="") as handle:
+        rows = list(csv.DictReader(handle))
+
+    assert "abstract" not in rows[0]
+    assert rows[0]["abstract_excerpt"] == "A" * 500
+    assert rows[0]["title"] == "Granulomatous mastitis treatment"
+
+
+def test_write_registry_view_records_can_export_tsv(tmp_path) -> None:
+    out_path = tmp_path / "view.tsv"
+
+    write_registry_view_records(out_path, records=[{"pmid": "1", "title": "A title"}], delimiter="\t")
+
+    raw_text = out_path.read_text(encoding="utf-8-sig")
+    assert "pmid\tpmcid\ttitle" in raw_text
+    assert "1\t\tA title" in raw_text

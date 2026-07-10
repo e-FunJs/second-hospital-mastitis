@@ -1,7 +1,7 @@
 """
 用途：对 RAG 文献和 chunk 做严格医学筛选，构建更可信的医学知识库。
 输入：literature_registry.csv 与 rag_chunks.jsonl。
-输出：strict/review/excluded 三套 registry、三套 chunk，以及 filter_report.md。
+输出：strict/review/excluded 三套 registry、三套 chunk、轻量 view CSV，以及 filter_report.md。
 说明：strict 进入默认医学检索；review 留给人工复核；excluded 不进入严格索引。
 """
 
@@ -306,6 +306,41 @@ def flatten_csv_record(record: dict[str, Any], fieldnames: list[str]) -> dict[st
     return {fieldname: csv_cell_text(record.get(fieldname, "")) for fieldname in fieldnames}
 
 
+REGISTRY_VIEW_FIELDS = [
+    "pmid",
+    "pmcid",
+    "title",
+    "year",
+    "journal",
+    "doi",
+    "has_full_text",
+    "source_queries",
+    "source_query_count",
+    "filter_decision",
+    "filter_include_score",
+    "filter_exclude_score",
+    "filter_include_matches",
+    "filter_exclude_matches",
+    "filter_review_reason",
+    "source_url",
+    "abstract_excerpt",
+]
+
+
+def registry_view_record(record: dict[str, Any]) -> dict[str, str]:
+    view_record = {field: csv_cell_text(record.get(field, "")) for field in REGISTRY_VIEW_FIELDS}
+    view_record["abstract_excerpt"] = csv_cell_text(record.get("abstract", ""))[:500]
+    return view_record
+
+
+def write_registry_view_records(path: Path, records: list[dict[str, Any]], delimiter: str = ",") -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8-sig", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=REGISTRY_VIEW_FIELDS, extrasaction="ignore", delimiter=delimiter)
+        writer.writeheader()
+        writer.writerows(registry_view_record(record) for record in records)
+
+
 def write_csv_records(path: Path, records: list[dict[str, Any]], fieldnames: list[str]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="") as handle:
@@ -490,6 +525,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--chunks-review-out", type=Path, default=Path("data/articles/processed/rag_chunks_review.jsonl"))
     parser.add_argument("--chunks-excluded-out", type=Path, default=Path("data/articles/processed/rag_chunks_excluded.jsonl"))
     parser.add_argument("--report-out", type=Path, default=Path("data/registry/filtered/filter_report.md"))
+    parser.add_argument("--registry-view-dir", type=Path, default=Path("data/registry/filtered/view"))
     return parser.parse_args(argv)
 
 
@@ -521,6 +557,13 @@ def main(argv: list[str] | None = None) -> int:
     write_csv_records(args.registry_review_out, registry_review, base_fields + filter_fields)
     write_csv_records(args.registry_excluded_out, registry_excluded, base_fields + filter_fields)
 
+    write_registry_view_records(args.registry_view_dir / "literature_registry_strict_view.csv", registry_included)
+    write_registry_view_records(args.registry_view_dir / "literature_registry_review_view.csv", registry_review)
+    write_registry_view_records(args.registry_view_dir / "literature_registry_excluded_view.csv", registry_excluded)
+    write_registry_view_records(args.registry_view_dir / "literature_registry_strict_view.tsv", registry_included, delimiter="\t")
+    write_registry_view_records(args.registry_view_dir / "literature_registry_review_view.tsv", registry_review, delimiter="\t")
+    write_registry_view_records(args.registry_view_dir / "literature_registry_excluded_view.tsv", registry_excluded, delimiter="\t")
+
     write_jsonl(args.chunks_strict_out, chunks_included)
     write_jsonl(args.chunks_review_out, chunks_review)
     write_jsonl(args.chunks_excluded_out, chunks_excluded)
@@ -536,6 +579,7 @@ def main(argv: list[str] | None = None) -> int:
     print(f"chunks_review={len(chunks_review)}")
     print(f"chunks_exclude={len(chunks_excluded)}")
     print(f"strict_chunks_out={args.chunks_strict_out}")
+    print(f"registry_view_dir={args.registry_view_dir}")
     print(f"report={args.report_out}")
     return 0
 
