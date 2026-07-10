@@ -194,6 +194,65 @@ queries:
       OR drainage[Title/Abstract] OR recurrence[Title/Abstract]
       OR remission[Title/Abstract]))
 
+  recurrent_drug_tx:
+    description: "Drug and medical treatment for recurrent, relapsed, and refractory mastitis."
+    pubmed: >
+      (("recurrent mastitis"[Title/Abstract]
+      OR "recurrent granulomatous mastitis"[Title/Abstract]
+      OR "refractory granulomatous mastitis"[Title/Abstract]
+      OR "relapsed granulomatous mastitis"[Title/Abstract]
+      OR "recurrent non-puerperal mastitis"[Title/Abstract]
+      OR "recurrent non-lactational mastitis"[Title/Abstract])
+      AND ("drug therapy"[Title/Abstract] OR "medical treatment"[Title/Abstract]
+      OR medication[Title/Abstract] OR therapy[Title/Abstract]
+      OR corticosteroid[Title/Abstract] OR methotrexate[Title/Abstract]
+      OR antibiotic[Title/Abstract] OR antibiotics[Title/Abstract]
+      OR rifampicin[Title/Abstract] OR rifampin[Title/Abstract]))
+
+  combination_drug_tx:
+    description: "Combination and multidrug therapy for mastitis, especially granulomatous and non-puerperal mastitis."
+    pubmed: >
+      ((mastitis[Title/Abstract]
+      OR "granulomatous mastitis"[Title/Abstract]
+      OR "granulomatous lobular mastitis"[Title/Abstract]
+      OR "non-puerperal mastitis"[Title/Abstract]
+      OR "non-lactational mastitis"[Title/Abstract]
+      OR "periductal mastitis"[Title/Abstract]
+      OR "plasma cell mastitis"[Title/Abstract])
+      AND ("combination therapy"[Title/Abstract]
+      OR "combined drug therapy"[Title/Abstract]
+      OR "combination drug therapy"[Title/Abstract]
+      OR "multidrug therapy"[Title/Abstract]
+      OR "combined medical treatment"[Title/Abstract]
+      OR "triple therapy"[Title/Abstract]))
+
+  steroid_mtx_combo_tx:
+    description: "Corticosteroid and methotrexate combination or steroid-sparing therapy for granulomatous mastitis."
+    pubmed: >
+      (("granulomatous mastitis"[Title/Abstract]
+      OR "idiopathic granulomatous mastitis"[Title/Abstract]
+      OR "granulomatous lobular mastitis"[Title/Abstract]
+      OR "refractory granulomatous mastitis"[Title/Abstract]
+      OR "recurrent granulomatous mastitis"[Title/Abstract])
+      AND (corticosteroid[Title/Abstract] OR steroid[Title/Abstract]
+      OR prednisone[Title/Abstract] OR prednisolone[Title/Abstract])
+      AND (methotrexate[Title/Abstract] OR "steroid-sparing therapy"[Title/Abstract]
+      OR immunosuppressive[Title/Abstract] OR immunosuppression[Title/Abstract]))
+
+  corynebacterium_antibiotic_tx:
+    description: "Corynebacterium-related granulomatous mastitis and antibiotic therapy, including recurrent disease."
+    pubmed: >
+      ((Corynebacterium[Title/Abstract]
+      OR "Corynebacterium kroppenstedtii"[Title/Abstract]
+      OR corynebacterial[Title/Abstract])
+      AND ("granulomatous mastitis"[Title/Abstract]
+      OR "recurrent granulomatous mastitis"[Title/Abstract]
+      OR mastitis[Title/Abstract])
+      AND ("antibiotic therapy"[Title/Abstract]
+      OR antibiotic[Title/Abstract] OR antibiotics[Title/Abstract]
+      OR antimicrobial[Title/Abstract] OR treatment[Title/Abstract]
+      OR therapy[Title/Abstract]))
+
   chinese_terms:
     description: "Chinese search terms for manual screening or Chinese literature databases."
     terms:
@@ -239,3 +298,19 @@ queries:
       - "rifampicin isoniazid ethambutol breast tuberculosis"
       - "anti-tubercular triple therapy mastitis"
       - "anti-tuberculosis combination therapy mastitis"
+
+      - "复发性乳腺炎 药物治疗"
+      - "复发性肉芽肿性乳腺炎 药物治疗"
+      - "难治性肉芽肿性乳腺炎 治疗"
+      - "肉芽肿性乳腺炎 联合用药"
+      - "非哺乳期乳腺炎 联合治疗"
+      - "乳腺炎 联合药物治疗"
+      - "肉芽肿性乳腺炎 激素 甲氨蝶呤"
+      - "肉芽肿性乳腺炎 抗生素治疗"
+      - "棒状杆菌 肉芽肿性乳腺炎 治疗"
+      - "Corynebacterium granulomatous mastitis antibiotic therapy"
+      - "recurrent granulomatous mastitis drug therapy"
+      - "granulomatous mastitis combination therapy"
+      - "non-puerperal mastitis combination therapy"
+      - "corticosteroid methotrexate granulomatous mastitis"
+      - "methotrexate prednisolone granulomatous mastitis"

@@ -98,3 +98,47 @@ def test_load_pubmed_queries_includes_anti_tubercular_combination_terms() -> Non
 
     for regimen_term in ["combination therapy", "triple therapy", "regimen"]:
         assert regimen_term in query
+
+
+def test_load_pubmed_queries_includes_recurrent_and_combination_drug_expansion() -> None:
+    queries = load_pubmed_queries(Path("configs/queries.yaml"))
+
+    expected = {
+        "recurrent_drug_tx": [
+            "recurrent mastitis",
+            "recurrent granulomatous mastitis",
+            "refractory granulomatous mastitis",
+            "relapsed granulomatous mastitis",
+            "drug therapy",
+            "medical treatment",
+        ],
+        "combination_drug_tx": [
+            "mastitis",
+            "granulomatous mastitis",
+            "non-puerperal mastitis",
+            "combination therapy",
+            "combined drug therapy",
+            "multidrug therapy",
+        ],
+        "steroid_mtx_combo_tx": [
+            "granulomatous mastitis",
+            "corticosteroid",
+            "methotrexate",
+            "prednisone",
+            "prednisolone",
+            "steroid-sparing therapy",
+        ],
+        "corynebacterium_antibiotic_tx": [
+            "corynebacterium",
+            "corynebacterium kroppenstedtii",
+            "granulomatous mastitis",
+            "antibiotic therapy",
+            "recurrent granulomatous mastitis",
+        ],
+    }
+
+    for query_name, expected_terms in expected.items():
+        assert query_name in queries
+        query = queries[query_name].lower()
+        for term in expected_terms:
+            assert term in query
