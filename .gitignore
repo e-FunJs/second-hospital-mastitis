@@ -9,8 +9,10 @@ __pycache__/
 data/raw/*
 data/processed/*
 data/index/*
+data/index_strict/*
 data/registry/raw/*
 data/registry/processed/*
+data/registry/filtered/*
 data/registry/*.csv
 data/registry/*.jsonl
 data/articles/raw/*
@@ -19,11 +21,14 @@ data/articles/processed/*
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 !data/index/.gitkeep
+!data/index_strict/.gitkeep
 !data/registry/.gitkeep
 !data/registry/raw/
 !data/registry/raw/.gitkeep
 !data/registry/processed/
 !data/registry/processed/.gitkeep
+!data/registry/filtered/
+!data/registry/filtered/.gitkeep
 !data/articles/
 !data/articles/raw/
 !data/articles/raw/.gitkeep
