@@ -14,8 +14,8 @@ import yaml
 # -----------------------------------------------------------------------------
 # JSONL 读写与文本规范化
 # -----------------------------------------------------------------------------
-# 这个脚本的输入是 semantic chunk 阶段产出的 article_chunks.jsonl。
-# 每一行是一个 chunk；本阶段只负责把 chunk 文本变成向量，不改写、不总结原文。
+# 这个脚本的输入是 chunk 阶段产出的 rag_chunks.jsonl。
+# 每一行是一个 chunk；本阶段只负责把原文片段编码成向量，不改写、不总结原文。
 
 
 def normalize_space(text: str | None) -> str:
@@ -178,7 +178,7 @@ def write_embedding_outputs(
 # 配置读取与主流程
 # -----------------------------------------------------------------------------
 # 默认模型路径来自 configs/embedding.yaml；命令行 --model-path 可以覆盖它。
-# 这样后续换 bge-base 或其它 embedding 模型时，不需要改代码。
+# 这样后续换 bge-base、bge-m3 或其它 embedding 模型时，不需要改代码。
 
 
 def model_path_from_config(config_path: Path) -> Path | None:
