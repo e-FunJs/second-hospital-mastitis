@@ -292,12 +292,26 @@ def read_csv_records(path: Path) -> list[dict[str, str]]:
         return list(csv.DictReader(handle))
 
 
+def csv_cell_text(value: Any) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, (list, tuple, set)):
+        value = "; ".join(str(item) for item in value)
+    # 关键处理：PubMed abstract 中常带有换行。CSV 标准允许单元格内换行，
+    # 但 VS Code/表格插件经常因此无法预览；这里仅压平空白，不改变筛选结果。
+    return " ".join(str(value).split())
+
+
+def flatten_csv_record(record: dict[str, Any], fieldnames: list[str]) -> dict[str, str]:
+    return {fieldname: csv_cell_text(record.get(fieldname, "")) for fieldname in fieldnames}
+
+
 def write_csv_records(path: Path, records: list[dict[str, Any]], fieldnames: list[str]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=fieldnames, extrasaction="ignore")
         writer.writeheader()
-        writer.writerows(records)
+        writer.writerows(flatten_csv_record(record, fieldnames) for record in records)
 
 
 def read_jsonl(path: Path) -> list[dict[str, Any]]:

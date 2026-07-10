@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
-from rag_medical.filter_corpus import Decision, classify_record, filter_chunks
+import csv
+
+from rag_medical.filter_corpus import Decision, classify_record, filter_chunks, write_csv_records
 
 
 def test_classify_record_includes_human_recurrent_granulomatous_mastitis_treatment() -> None:
@@ -152,3 +154,20 @@ def test_filter_chunks_sends_animal_noise_inside_included_article_to_review() ->
     assert excluded == []
     assert len(review) == 1
     assert review[0]["filter_level"] == "chunk_noise_review"
+
+
+def test_write_csv_records_flattens_multiline_cells(tmp_path) -> None:
+    out_path = tmp_path / "records.csv"
+
+    write_csv_records(
+        out_path,
+        records=[{"pmid": "1", "abstract": "first line\nsecond line\r\nthird line"}],
+        fieldnames=["pmid", "abstract"],
+    )
+
+    raw_text = out_path.read_text(encoding="utf-8")
+    with out_path.open("r", encoding="utf-8", newline="") as handle:
+        rows = list(csv.DictReader(handle))
+
+    assert "first line\nsecond line" not in raw_text
+    assert rows[0]["abstract"] == "first line second line third line"
