@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# 用途：解析下载到本地的 PMC XML 全文。
+# 输入：data/articles/raw/pmc_xml/*.xml。
+# 输出：article_sections.jsonl 与 article_parse_manifest.csv。
+
 set -euo pipefail
 
 LIMIT="${1:-}"

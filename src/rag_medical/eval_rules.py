@@ -1,3 +1,10 @@
+"""
+用途：对 RAG 回答做确定性规则评估。
+输入：回答 JSON/Markdown 与对应 evidence JSON。
+输出：一个规则评估字典，由 evaluate_answer.py 汇总并写入 *_eval.json。
+说明：不调用模型，主要检查引用、证据覆盖、危险医学建议等问题。
+"""
+
 from __future__ import annotations
 
 import json

@@ -1,3 +1,10 @@
+"""
+用途：统一运行 RAG 回答评估，可选择规则评估、LLM-as-judge 或二者结合。
+输入：*_answer.json 或 *_answer.md，以及对应 *_evidence.json。
+输出：默认生成同名前缀的 *_eval.json。
+说明：这是回答质量控制入口，用于检查引用是否可靠、是否越过证据给医学建议。
+"""
+
 from __future__ import annotations
 
 import argparse

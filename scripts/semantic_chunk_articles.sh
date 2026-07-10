@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# 用途：对解析后的文章段落做语义分块。
+# 输入：data/articles/processed/article_sections.jsonl。
+# 输出：article_chunks.jsonl 与 chunk_manifest.csv。
+
 set -euo pipefail
 
 LIMIT_GROUPS="${1:-}"

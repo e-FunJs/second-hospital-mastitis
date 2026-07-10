@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# 用途：调试向量检索，直接查看 query 命中的 chunk。
+# 输入：查询文本、data/index/faiss.index、data/index/chunk_metadata.jsonl。
+# 输出：终端打印检索结果；不默认写文件。
+
 set -euo pipefail
 
 QUERY="${1:-}"

@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# 用途：执行第一层 RAG 检索并生成 evidence 与 prompt。
+# 输入：用户问题、data/index/faiss.index、data/index/chunk_metadata.jsonl。
+# 输出：data/rag/answers/*_evidence.json 与 *_prompt.txt。
+
 set -euo pipefail
 
 QUESTION="${1:-}"

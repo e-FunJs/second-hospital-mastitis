@@ -1,3 +1,10 @@
+"""
+用途：对 XML 解析出的段落做语义分块，生成适合 RAG 检索的 chunk。
+输入：data/articles/processed/article_sections.jsonl 与 BGE embedding 模型。
+输出：article_chunks.jsonl 与 chunk_manifest.csv。
+说明：用相邻句群 embedding 相似度寻找话题边界，不是简单按固定字符切分。
+"""
+
 from __future__ import annotations
 
 import argparse

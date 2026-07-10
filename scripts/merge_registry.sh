@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# 用途：合并不同 PubMed 检索结果并去重。
+# 输入：data/registry/raw/*.csv。
+# 输出：data/registry/processed/literature_registry.csv 与 literature_registry_summary.md。
+
 set -euo pipefail
 
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

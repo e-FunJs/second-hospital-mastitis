@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# 用途：合并全文 chunk 与摘要 chunk，形成 broad RAG 语料。
+# 输入：article_chunks.jsonl 与 abstract_chunks.jsonl。
+# 输出：data/articles/processed/rag_chunks.jsonl。
+
 set -euo pipefail
 
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

@@ -1,3 +1,10 @@
+"""
+用途：把 RAG chunk 文本编码成向量矩阵，供 FAISS 检索使用。
+输入：默认 data/articles/processed/rag_chunks.jsonl。
+输出：data/index/chunk_embeddings.npy、chunk_metadata.jsonl、embedding_manifest.json。
+说明：metadata 与 embedding 按 row_index 一一对应，后续检索依赖这个对应关系。
+"""
+
 from __future__ import annotations
 
 import argparse

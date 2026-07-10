@@ -1,3 +1,10 @@
+"""
+用途：根据文献 registry 中的 PMCID 下载 PMC Open Access XML 全文。
+输入：data/registry/processed/literature_registry.csv。
+输出：data/articles/raw/pmc_xml/*.xml 与 pmc_download_manifest.csv。
+说明：只有存在 PMCID 且可公开访问的文章才能下载到全文 XML。
+"""
+
 from __future__ import annotations
 
 import argparse

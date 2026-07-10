@@ -1,3 +1,10 @@
+"""
+用途：使用本地 LLM 对 RAG 回答做 LLM-as-judge 自动评估。
+输入：回答文本、证据 JSON、本地 LLM 配置。
+输出：一个包含评分、风险判断、修改建议的评估字典，由 evaluate_answer.py 写入文件。
+说明：这是评估模块的子模块，通常不直接在命令行单独运行。
+"""
+
 from __future__ import annotations
 
 import json

@@ -1,3 +1,10 @@
+"""
+用途：定义文献 registry 的标准字段结构。
+输入：无直接文件输入。
+输出：无运行产物。
+说明：供 PubMed 搜索、registry 合并等模块复用，保证字段名一致。
+"""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, fields

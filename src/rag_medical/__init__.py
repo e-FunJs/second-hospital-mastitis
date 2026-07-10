@@ -1,4 +1,9 @@
-"""RAG tooling for non-puerperal mastitis knowledge base construction."""
+"""
+用途：声明 rag_medical 为本项目 RAG 工具包。
+输入：无。
+输出：无运行产物。
+说明：业务脚本位于同目录其他模块，本文件主要用于包导入。
+"""
 
 __all__ = ["schema"]
 

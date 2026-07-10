@@ -1,3 +1,10 @@
+"""
+用途：调用本地 LLM，根据 RAG prompt 生成最终回答。
+输入：rag_answer.py 生成的 *_prompt.txt。
+输出：同名前缀的 *_answer.md 与 *_answer.json。
+说明：本文件只负责生成回答，不负责检索证据，也不负责评估答案。
+"""
+
 from __future__ import annotations
 
 import argparse

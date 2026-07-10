@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# 用途：调用本地 LLM，根据 RAG prompt 生成回答。
+# 输入：data/rag/answers/*_prompt.txt。
+# 输出：同名前缀的 *_answer.md 与 *_answer.json。
+
 set -euo pipefail
 
 PROMPT_PATH="${1:-}"

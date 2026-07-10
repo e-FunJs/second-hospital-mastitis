@@ -1,3 +1,10 @@
+"""
+用途：把没有 PMC 全文、但有 PubMed 摘要的文献转成 RAG chunk。
+输入：data/registry/processed/literature_registry.csv。
+输出：data/articles/processed/abstract_chunks.jsonl。
+说明：只处理摘要文本，不下载全文、不生成 embedding、不建立索引。
+"""
+
 from __future__ import annotations
 
 import argparse

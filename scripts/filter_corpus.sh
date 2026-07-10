@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# 用途：执行严格医学筛选，生成 strict/review/excluded 三层语料。
+# 输入：data/registry/processed/literature_registry.csv 与 data/articles/processed/rag_chunks.jsonl。
+# 输出：data/registry/filtered/* 与 data/articles/processed/rag_chunks_{strict,review,excluded}.jsonl。
+
 set -euo pipefail
 
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

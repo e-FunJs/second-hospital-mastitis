@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# 用途：初始化/进入项目目录，并激活 hospital 环境。
+# 输入：无固定数据输入。
+# 输出：通常不生成数据文件；主要用于服务器环境准备。
+
 set -euo pipefail
 
 PROJECT_NAME="second-hospital-mastitis"

@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# 用途：基于 broad embedding 构建 FAISS 检索索引。
+# 输入：data/index/chunk_embeddings.npy 与 chunk_metadata.jsonl。
+# 输出：data/index/faiss.index 与 faiss_manifest.json。
+
 set -euo pipefail
 
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

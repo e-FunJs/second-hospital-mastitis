@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# 用途：根据 registry 中的 PMCID 下载 PMC XML 全文。
+# 输入：data/registry/processed/literature_registry.csv。
+# 输出：data/articles/raw/pmc_xml/*.xml 与 pmc_download_manifest.csv。
+
 set -euo pipefail
 
 LIMIT="${1:-}"

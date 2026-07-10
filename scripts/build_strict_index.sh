@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# 用途：基于严格医学筛选后的 chunk 构建 strict FAISS 检索索引。
+# 输入：data/articles/processed/rag_chunks_strict.jsonl。
+# 输出：data/index_strict/chunk_embeddings.npy、chunk_metadata.jsonl、faiss.index 等索引文件。
+
 set -euo pipefail
 
 LIMIT="${1:-}"

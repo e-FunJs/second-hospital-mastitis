@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# 用途：评估 RAG 生成答案，可运行 rules、judge 或 all。
+# 输入：data/rag/answers/*_answer.json 或 *_answer.md。
+# 输出：同目录同名前缀的 *_eval.json。
+
 set -euo pipefail
 
 ANSWER_PATH="${1:-}"

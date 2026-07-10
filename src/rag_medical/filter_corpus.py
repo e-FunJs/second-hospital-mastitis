@@ -1,3 +1,10 @@
+"""
+用途：对 RAG 文献和 chunk 做严格医学筛选，构建更可信的医学知识库。
+输入：literature_registry.csv 与 rag_chunks.jsonl。
+输出：strict/review/excluded 三套 registry、三套 chunk，以及 filter_report.md。
+说明：strict 进入默认医学检索；review 留给人工复核；excluded 不进入严格索引。
+"""
+
 from __future__ import annotations
 
 import argparse

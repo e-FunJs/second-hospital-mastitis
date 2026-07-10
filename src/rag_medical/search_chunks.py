@@ -1,3 +1,10 @@
+"""
+用途：直接查询 FAISS 索引，查看与问题最相近的 RAG chunk。
+输入：查询文本、data/index/faiss.index、data/index/chunk_metadata.jsonl。
+输出：终端打印检索结果；可选 --json-out 保存 JSON。
+说明：这是检索调试工具，不生成 LLM prompt，也不生成最终回答。
+"""
+
 from __future__ import annotations
 
 import argparse

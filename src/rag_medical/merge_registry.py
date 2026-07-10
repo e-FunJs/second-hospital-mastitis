@@ -1,3 +1,10 @@
+"""
+用途：合并不同 PubMed query 产生的 registry CSV，并按 PMID/PMCID/DOI 去重。
+输入：data/registry/raw/*.csv。
+输出：data/registry/processed/literature_registry.csv 与 literature_registry_summary.md。
+说明：这是文献元数据进入后续下载、解析、筛选流程前的汇总步骤。
+"""
+
 from __future__ import annotations
 
 import argparse

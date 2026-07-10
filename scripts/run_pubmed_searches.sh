@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# 用途：批量运行 configs/queries.yaml 中全部 PubMed 检索 query。
+# 输入：configs/queries.yaml。
+# 输出：data/registry/raw/pubmed_<query_key>.csv。
+
 set -euo pipefail
 
 MAX_RESULTS="${1:-100}"

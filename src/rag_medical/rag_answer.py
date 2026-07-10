@@ -1,3 +1,10 @@
+"""
+用途：执行第一层 RAG：检索证据并拼接成可交给 LLM 的 prompt。
+输入：用户问题、FAISS index、chunk_metadata.jsonl、embedding 模型配置。
+输出：data/rag/answers/*_evidence.json 与 *_prompt.txt。
+说明：本文件不直接调用 LLM；回答生成由 generate_answer.py 完成。
+"""
+
 from __future__ import annotations
 
 import argparse

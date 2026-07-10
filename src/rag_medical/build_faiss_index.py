@@ -1,3 +1,10 @@
+"""
+用途：把已生成的 chunk embedding 矩阵构建成 FAISS 向量索引。
+输入：data/index/chunk_embeddings.npy 与 data/index/chunk_metadata.jsonl。
+输出：data/index/faiss.index 与 data/index/faiss_manifest.json。
+说明：本文件只建索引，不负责生成 embedding，也不负责回答问题。
+"""
+
 from __future__ import annotations
 
 import argparse

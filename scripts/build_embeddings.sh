@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# 用途：把 broad RAG chunk 编码成向量矩阵。
+# 输入：data/articles/processed/rag_chunks.jsonl。
+# 输出：data/index/chunk_embeddings.npy、chunk_metadata.jsonl、embedding_manifest.json。
+
 set -euo pipefail
 
 LIMIT="${1:-}"

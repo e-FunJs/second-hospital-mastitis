@@ -1,3 +1,10 @@
+"""
+用途：解析 PMC XML 全文，抽取文章标题、章节、段落等结构化文本。
+输入：data/articles/raw/pmc_xml/*.xml。
+输出：article_sections.jsonl 与 article_parse_manifest.csv。
+说明：输出仍是段落级文本，不是最终 RAG chunk；后续还要语义切分。
+"""
+
 from __future__ import annotations
 
 import argparse

@@ -1,3 +1,10 @@
+"""
+用途：按 configs/queries.yaml 中的 query 检索 PubMed 文献元数据。
+输入：query-key 或自定义 PubMed query。
+输出：data/registry/raw/pubmed_<query_key>.csv。
+说明：只获得题名、摘要、PMID、PMCID 等元数据，不下载全文。
+"""
+
 from __future__ import annotations
 
 import argparse
