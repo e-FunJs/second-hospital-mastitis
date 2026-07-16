@@ -116,7 +116,7 @@ def percentile(values: list[float], q: float) -> float:
 # -----------------------------------------------------------------------------
 # similarities[i] 表示 sentence[i] 与 sentence[i + 1] 附近窗口的语义相似度。
 # 当某个位置相似度明显低于本 section 的局部水平,并且不是太靠近 chunk 开头/结尾,
-# 就认为这里可能发生了话题转换,可以作为 chunk 边界    
+# 认为这里可能发生了话题转换,可以作为 chunk 边界    
 
 
 def is_local_valley(scores: list[float], index: int, margin: float) -> bool:

@@ -1,8 +1,8 @@
 """
-用途：把 RAG chunk 文本编码成向量矩阵，供 FAISS 检索使用。
-输入：默认 data/articles/processed/rag_chunks.jsonl。
-输出：data/index/chunk_embeddings.npy、chunk_metadata.jsonl、embedding_manifest.json。
-说明：metadata 与 embedding 按 row_index 一一对应，后续检索依赖这个对应关系。
+用途:把 RAG chunk 文本编码成向量矩阵，供 FAISS 检索使用。
+输入:默认 data/articles/processed/rag_chunks.jsonl。
+输出:data/index/chunk_embeddings.npy、chunk_metadata.jsonl、embedding_manifest.json。
+说明:metadata 与 embedding 按 row_index 一一对应，后续检索依赖这个对应关系。
 """
 
 from __future__ import annotations
@@ -22,7 +22,7 @@ import yaml
 # JSONL 读写与文本规范化
 # -----------------------------------------------------------------------------
 # 这个脚本的输入是 chunk 阶段产出的 rag_chunks.jsonl。
-# 每一行是一个 chunk；本阶段只负责把原文片段编码成向量，不改写、不总结原文。
+# 每一行是一个 chunk;本阶段只负责把原文片段编码成向量，不改写、不总结原文。
 
 
 def normalize_space(text: str | None) -> str:
@@ -54,7 +54,7 @@ def write_jsonl(path: Path, records: Iterable[dict[str, Any]]) -> None:
 # embedding 输入文本构造
 # -----------------------------------------------------------------------------
 # BGE 看到的文本不是只有 chunk.text，而是 Title + Section + Text。
-# 原因：有些 chunk 本身很短，加入题名和章节名能帮模型理解它属于治疗、影像、诊断
+# 原因:有些 chunk 本身很短，加入题名和章节名能帮模型理解它属于治疗、影像、诊断
 # 还是预后语境。PMCID/DOI 这类追溯字段不放入 embedding 文本，因为它们不是语义内容。
 
 
@@ -99,8 +99,8 @@ def build_metadata_record(chunk: dict[str, Any], row_index: int) -> dict[str, An
 # -----------------------------------------------------------------------------
 # 模型加载与批量编码
 # -----------------------------------------------------------------------------
-# 和你之前训练代码相似的地方：读取数据、加载模型、构造 batch、送进模型。
-# 不同点：这里关闭训练语义，不需要 labels/loss/optimizer/backward；SentenceTransformer.encode
+# 和你之前训练代码相似的地方:读取数据、加载模型、构造 batch、送进模型。
+# 不同点:这里关闭训练语义，不需要 labels/loss/optimizer/backward;SentenceTransformer.encode
 # 内部会做 tokenizer 和 pooling，我们只拿最终 embedding。
 
 
@@ -142,7 +142,7 @@ def encode_texts(
 # -----------------------------------------------------------------------------
 # 输出文件
 # -----------------------------------------------------------------------------
-# embeddings.npy 存矩阵，metadata.jsonl 存可读追溯信息。两者用 row_index 对齐：
+# embeddings.npy 存矩阵，metadata.jsonl 存可读追溯信息。两者用 row_index 对齐:
 # embeddings[row_index] 就对应 metadata 里同一个 row_index 的 chunk。
 
 
@@ -184,7 +184,7 @@ def write_embedding_outputs(
 # -----------------------------------------------------------------------------
 # 配置读取与主流程
 # -----------------------------------------------------------------------------
-# 默认模型路径来自 configs/embedding.yaml；命令行 --model-path 可以覆盖它。
+# 默认模型路径来自 configs/embedding.yaml;命令行 --model-path 可以覆盖它。
 # 这样后续换 bge-base、bge-m3 或其它 embedding 模型时，不需要改代码。
 
 
@@ -218,7 +218,7 @@ def build_embeddings(
     model = load_sentence_transformer(model_path, device)
     embeddings = encode_texts(model, embedding_texts, batch_size=batch_size, normalize_embeddings=True)
 
-    # 关键检查：如果这里不一致，后续 FAISS 检索会出现“向量命中 A，metadata 指向 B”的严重错位。
+    # 关键检查:如果这里不一致，后续 FAISS 检索会出现“向量命中 A，metadata 指向 B”的严重错位。
     if embeddings.shape[0] != len(metadata_records):
         raise RuntimeError("embedding count and metadata count are not aligned")
 

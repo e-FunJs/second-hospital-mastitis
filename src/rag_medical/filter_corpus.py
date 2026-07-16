@@ -1,8 +1,8 @@
 """
-用途：对 RAG 文献和 chunk 做严格医学筛选，构建更可信的医学知识库。
-输入：literature_registry.csv 与 rag_chunks.jsonl。
-输出：strict/review/excluded 三套 registry、三套 chunk、轻量 view CSV，以及 filter_report.md。
-说明：strict 进入默认医学检索；review 留给人工复核；excluded 不进入严格索引。
+用途:对 RAG 文献和 chunk 做严格医学筛选
+输入:literature_registry.csv 与 rag_chunks.jsonl。
+输出:strict/review/excluded 三套 registry、三套 chunk、轻量 view CSV 以及 filter_report.md。
+说明:strict 进入默认医学检索;review 留给人工复核;excluded 不进入严格索引。
 """
 
 from __future__ import annotations
@@ -23,7 +23,7 @@ from typing import Any, Iterable
 # 规则词表
 # -----------------------------------------------------------------------------
 # 严格筛选的目标是构建 human breast / non-puerperal mastitis 相关知识库。
-# 这里使用可审计的规则，而不是 LLM 判断：每个决策都能追溯到命中的关键词。
+# 这里使用可审计的规则，而不是 LLM 判断:每个决策都能追溯到命中的关键词。
 
 INCLUDE_TERMS: tuple[tuple[str, int], ...] = (
     ("idiopathic granulomatous mastitis", 6),
@@ -234,10 +234,10 @@ def chunk_text(chunk: dict[str, Any]) -> str:
 # -----------------------------------------------------------------------------
 # 文章级严格筛选
 # -----------------------------------------------------------------------------
-# include/review/exclude 三分类：
-# - include：强目标疾病 + 治疗/结局/人类临床语境足够明确。
-# - exclude：动物、纯泌乳期、纯肿瘤或泛实验研究明显压过目标信号。
-# - review：相关但不够确定，保留给人工复核，不进入 strict index。
+# include/review/exclude 三分类:
+# - include:强目标疾病 + 治疗/结局/人类临床语境足够明确。
+# - exclude:动物、纯泌乳期、纯肿瘤或泛实验研究明显压过目标信号。
+# - review:相关但不够确定，保留给人工复核，不进入 strict index。
 
 
 def classify_text(text: str) -> Decision:
@@ -297,8 +297,8 @@ def csv_cell_text(value: Any) -> str:
         return ""
     if isinstance(value, (list, tuple, set)):
         value = "; ".join(str(item) for item in value)
-    # 关键处理：PubMed abstract 中常带有换行。CSV 标准允许单元格内换行，
-    # 但 VS Code/表格插件经常因此无法预览；这里仅压平空白，不改变筛选结果。
+    # 关键处理:PubMed abstract 中常带有换行。CSV 标准允许单元格内换行，
+    # 但 VS Code/表格插件经常因此无法预览;这里仅压平空白，不改变筛选结果。
     return " ".join(str(value).split())
 
 
