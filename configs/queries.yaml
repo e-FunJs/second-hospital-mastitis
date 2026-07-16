@@ -253,6 +253,66 @@ queries:
       OR antimicrobial[Title/Abstract] OR treatment[Title/Abstract]
       OR therapy[Title/Abstract]))
 
+  human_mastitis_drug_tx:
+    description: "Human breast mastitis medication/drug therapy, constrained away from veterinary mastitis."
+    pubmed: >
+      ((mastitis[Title/Abstract]
+      OR "granulomatous mastitis"[Title/Abstract]
+      OR "granulomatous lobular mastitis"[Title/Abstract]
+      OR "non-puerperal mastitis"[Title/Abstract]
+      OR "nonpuerperal mastitis"[Title/Abstract]
+      OR "non-lactational mastitis"[Title/Abstract]
+      OR "nonlactational mastitis"[Title/Abstract]
+      OR "periductal mastitis"[Title/Abstract]
+      OR "plasma cell mastitis"[Title/Abstract]
+      OR "mammary duct ectasia"[Title/Abstract]
+      OR "breast tuberculosis"[Title/Abstract]
+      OR "tuberculous mastitis"[Title/Abstract])
+      AND (human[Title/Abstract] OR humans[MeSH Terms]
+      OR patient[Title/Abstract] OR patients[Title/Abstract]
+      OR woman[Title/Abstract] OR women[Title/Abstract]
+      OR female[Title/Abstract] OR breast[Title/Abstract])
+      AND ("drug therapy"[Title/Abstract] OR medication[Title/Abstract]
+      OR pharmacotherapy[Title/Abstract] OR "medical therapy"[Title/Abstract]
+      OR "medical treatment"[Title/Abstract] OR antibiotic[Title/Abstract]
+      OR antibiotics[Title/Abstract] OR antimicrobial[Title/Abstract]
+      OR corticosteroid[Title/Abstract] OR steroid[Title/Abstract]
+      OR prednisone[Title/Abstract] OR prednisolone[Title/Abstract]
+      OR methotrexate[Title/Abstract] OR rifampin[Title/Abstract]
+      OR rifampicin[Title/Abstract] OR isoniazid[Title/Abstract]
+      OR ethambutol[Title/Abstract] OR immunosuppressive[Title/Abstract])
+      NOT (bovine[Title/Abstract] OR cow[Title/Abstract] OR cows[Title/Abstract]
+      OR cattle[Title/Abstract] OR dairy[Title/Abstract] OR veterinary[Title/Abstract]
+      OR herd[Title/Abstract] OR udder[Title/Abstract] OR teat[Title/Abstract]
+      OR intramammary[Title/Abstract]))
+
+  female_mastitis_nonsurgical_tx:
+    description: "Female breast mastitis non-surgical/conservative treatment and medication therapy."
+    pubmed: >
+      ((mastitis[Title/Abstract]
+      OR "granulomatous mastitis"[Title/Abstract]
+      OR "granulomatous lobular mastitis"[Title/Abstract]
+      OR "non-puerperal mastitis"[Title/Abstract]
+      OR "nonpuerperal mastitis"[Title/Abstract]
+      OR "non-lactational mastitis"[Title/Abstract]
+      OR "nonlactational mastitis"[Title/Abstract]
+      OR "periductal mastitis"[Title/Abstract]
+      OR "plasma cell mastitis"[Title/Abstract]
+      OR "mammary duct ectasia"[Title/Abstract])
+      AND (female[Title/Abstract] OR woman[Title/Abstract] OR women[Title/Abstract]
+      OR patient[Title/Abstract] OR patients[Title/Abstract] OR breast[Title/Abstract])
+      AND ("non-surgical"[Title/Abstract] OR nonsurgical[Title/Abstract]
+      OR conservative[Title/Abstract] OR "conservative treatment"[Title/Abstract]
+      OR "medical treatment"[Title/Abstract] OR "medical therapy"[Title/Abstract]
+      OR medication[Title/Abstract] OR "drug therapy"[Title/Abstract]
+      OR antibiotic[Title/Abstract] OR antibiotics[Title/Abstract]
+      OR corticosteroid[Title/Abstract] OR steroid[Title/Abstract]
+      OR methotrexate[Title/Abstract] OR observation[Title/Abstract])
+      NOT (bovine[Title/Abstract] OR cow[Title/Abstract] OR cows[Title/Abstract]
+      OR cattle[Title/Abstract] OR dairy[Title/Abstract] OR veterinary[Title/Abstract]
+      OR herd[Title/Abstract] OR udder[Title/Abstract] OR teat[Title/Abstract]
+      OR intramammary[Title/Abstract]))
+
   chinese_terms:
     description: "Chinese search terms for manual screening or Chinese literature databases."
     terms:
