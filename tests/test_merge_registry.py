@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import csv
 
-from rag_medical.merge_registry import discover_source_files, merge_rows
+from rag_medical.english.merge_registry import discover_source_files, merge_rows
 
 
 def write_csv(path, rows) -> None:

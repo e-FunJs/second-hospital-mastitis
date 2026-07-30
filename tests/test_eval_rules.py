@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from rag_medical.eval_rules import (
+from rag_medical.common.eval_rules import (
     evaluate_rules,
     extract_citation_ids,
     infer_evidence_path,

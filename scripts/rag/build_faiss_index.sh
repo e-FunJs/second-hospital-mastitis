@@ -5,7 +5,7 @@
 
 set -euo pipefail
 
-PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "${PROJECT_DIR}"
 
 if command -v conda >/dev/null 2>&1; then
@@ -18,7 +18,7 @@ fi
 
 mkdir -p data/index
 
-python -m rag_medical.build_faiss_index \
+python -m rag_medical.common.build_faiss_index \
   --embeddings data/index/chunk_embeddings.npy \
   --metadata data/index/chunk_metadata.jsonl \
   --index-out data/index/faiss.index \

@@ -9,11 +9,11 @@ ANSWER_PATH="${1:-}"
 MODE="${2:-rules}"
 
 if [[ -z "${ANSWER_PATH}" ]]; then
-  echo "Usage: bash scripts/evaluate_answer.sh path/to/answer.json [rules|judge|all]" >&2
+  echo "Usage: bash scripts/rag/evaluate_answer.sh path/to/answer.json [rules|judge|all]" >&2
   exit 2
 fi
 
-PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "${PROJECT_DIR}"
 
 if command -v conda >/dev/null 2>&1; then
@@ -24,6 +24,6 @@ if command -v conda >/dev/null 2>&1; then
   fi
 fi
 
-python -m rag_medical.evaluate_answer \
+python -m rag_medical.common.evaluate_answer \
   --answer "${ANSWER_PATH}" \
   --mode "${MODE}"

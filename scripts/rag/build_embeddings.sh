@@ -7,7 +7,7 @@ set -euo pipefail
 
 LIMIT="${1:-}"
 
-PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "${PROJECT_DIR}"
 
 if command -v conda >/dev/null 2>&1; then
@@ -21,7 +21,7 @@ fi
 mkdir -p data/index
 
 CMD=(
-  python -m rag_medical.build_embeddings
+  python -m rag_medical.common.build_embeddings
   --input data/articles/processed/rag_chunks.jsonl
   --embedding-out data/index/chunk_embeddings.npy
   --metadata-out data/index/chunk_metadata.jsonl

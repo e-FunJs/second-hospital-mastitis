@@ -17,9 +17,9 @@ from typing import Any
 
 import faiss
 
-from rag_medical.build_embeddings import model_path_from_config, resolve_device
-from rag_medical.build_faiss_index import read_metadata_jsonl
-from rag_medical.search_chunks import (
+from rag_medical.common.build_embeddings import model_path_from_config, resolve_device
+from rag_medical.common.build_faiss_index import read_metadata_jsonl
+from rag_medical.common.search_chunks import (
     build_search_results,
     encode_query,
     load_sentence_transformer,

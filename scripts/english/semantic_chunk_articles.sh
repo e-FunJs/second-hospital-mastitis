@@ -7,7 +7,7 @@ set -euo pipefail
 
 LIMIT_GROUPS="${1:-}"
 
-PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "${PROJECT_DIR}"
 
 if command -v conda >/dev/null 2>&1; then
@@ -21,7 +21,7 @@ fi
 mkdir -p data/articles/processed
 
 CMD=(
-  python -m rag_medical.semantic_chunk
+  python -m rag_medical.english.semantic_chunk
   --input data/articles/processed/article_sections.jsonl
   --out data/articles/processed/article_chunks.jsonl
   --manifest data/articles/processed/chunk_manifest.csv

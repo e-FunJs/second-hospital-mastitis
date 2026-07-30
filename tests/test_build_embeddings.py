@@ -9,7 +9,7 @@ import json
 
 import numpy as np
 
-from rag_medical.build_embeddings import (
+from rag_medical.common.build_embeddings import (
     build_embedding_text,
     build_metadata_record,
     write_embedding_outputs,

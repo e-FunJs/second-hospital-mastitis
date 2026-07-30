@@ -9,12 +9,12 @@ import json
 
 import numpy as np
 
-from rag_medical.build_faiss_index import (
+from rag_medical.common.build_faiss_index import (
     build_faiss_index,
     validate_embeddings_and_metadata,
     write_faiss_manifest,
 )
-from rag_medical.search_chunks import build_search_results, search_index
+from rag_medical.common.search_chunks import build_search_results, search_index
 
 
 def test_validate_embeddings_and_metadata_rejects_row_mismatch() -> None:

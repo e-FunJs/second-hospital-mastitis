@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import csv
 
-from rag_medical.filter_corpus import Decision, classify_record, filter_chunks, write_csv_records, write_registry_view_records
+from rag_medical.english.filter_corpus import Decision, classify_record, filter_chunks, write_csv_records, write_registry_view_records
 
 
 def test_classify_record_includes_human_recurrent_granulomatous_mastitis_treatment() -> None:

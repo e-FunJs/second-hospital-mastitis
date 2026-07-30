@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # 用途：在第一轮 strict/review/excluded 筛选之后，运行 BGE 动物乳腺炎语义复核。
-# 前置步骤：bash scripts/filter_corpus.sh
+# 前置步骤：bash scripts/english/filter_corpus.sh
 # 输入：第一轮 registry/chunk 文件、broad rag_chunks.jsonl 与 models/bge/bge-m3。
 # 输出：
 #   data/registry/filtered/semantic/（最终 registry、锚点、审计表和报告）
@@ -8,7 +8,7 @@
 
 set -euo pipefail
 
-PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "${PROJECT_DIR}"
 
 if command -v conda >/dev/null 2>&1; then
@@ -19,7 +19,7 @@ if command -v conda >/dev/null 2>&1; then
   fi
 fi
 
-python -m rag_medical.animal_filter "$@"
+python -m rag_medical.english.animal_filter "$@"
 
 echo
 echo "Generated animal semantic filter files:"

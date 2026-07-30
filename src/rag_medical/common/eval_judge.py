@@ -14,7 +14,7 @@ from typing import Any
 
 import torch
 
-from rag_medical.generate_answer import (
+from rag_medical.common.generate_answer import (
     LLMConfig,
     extract_model_inputs,
     load_local_causal_lm,

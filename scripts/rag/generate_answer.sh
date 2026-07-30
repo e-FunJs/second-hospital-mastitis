@@ -9,11 +9,11 @@ PROMPT_PATH="${1:-}"
 MAX_NEW_TOKENS="${2:-}"
 
 if [[ -z "${PROMPT_PATH}" ]]; then
-  echo "Usage: bash scripts/generate_answer.sh path/to/prompt.txt [max_new_tokens]" >&2
+  echo "Usage: bash scripts/rag/generate_answer.sh path/to/prompt.txt [max_new_tokens]" >&2
   exit 2
 fi
 
-PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "${PROJECT_DIR}"
 
 if command -v conda >/dev/null 2>&1; then
@@ -25,7 +25,7 @@ if command -v conda >/dev/null 2>&1; then
 fi
 
 CMD=(
-  python -m rag_medical.generate_answer
+  python -m rag_medical.common.generate_answer
   --prompt "${PROMPT_PATH}"
   --config configs/llm.yaml
 )

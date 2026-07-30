@@ -25,6 +25,6 @@ ssh $RemoteHost "mkdir -p '$RemoteBase'"
 scp $Archive "${RemoteHost}:$RemoteArchive"
 ssh $RemoteHost "tar -xzf '$RemoteArchive' -C '$RemoteBase'"
 
-ssh $RemoteHost "cd '$RemoteProject' && bash scripts/bootstrap_server.sh"
+ssh $RemoteHost "cd '$RemoteProject' && bash scripts/setup/bootstrap_server.sh"
 
 Write-Host "Uploaded and initialized: $RemoteProject"

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from rag_medical.animal_rules import (
+from rag_medical.english.animal_rules import (
     ChunkScore,
     SemanticConfig,
     decide_article,

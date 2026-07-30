@@ -15,7 +15,7 @@ import sys
 from pathlib import Path
 from typing import Any, Iterable
 
-from rag_medical.semantic_chunk import normalize_space, split_sentences, word_count
+from rag_medical.english.semantic_chunk import normalize_space, split_sentences, word_count
 
 
 # -----------------------------------------------------------------------------

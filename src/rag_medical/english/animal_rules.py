@@ -21,7 +21,7 @@ from typing import Any, Iterable
 
 import numpy as np
 
-from rag_medical.semantic_chunk import split_sentences, word_count
+from rag_medical.english.semantic_chunk import split_sentences, word_count
 
 
 # -----------------------------------------------------------------------------

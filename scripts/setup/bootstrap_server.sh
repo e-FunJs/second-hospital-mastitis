@@ -24,4 +24,4 @@ python -m pip install -e .
 
 echo "Project ready at: ${PROJECT_DIR}"
 echo "Try:"
-echo "bash scripts/run_pubmed_searches.sh 100"
+echo "bash scripts/english/run_pubmed_searches.sh 100"

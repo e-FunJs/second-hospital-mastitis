@@ -5,7 +5,7 @@
 
 from __future__ import annotations
 
-from rag_medical.semantic_chunk import (
+from rag_medical.english.semantic_chunk import (
     ChunkConfig,
     build_chunk_records,
     choose_semantic_boundaries,

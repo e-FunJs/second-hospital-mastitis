@@ -15,9 +15,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from rag_medical.eval_judge import run_llm_judge
-from rag_medical.eval_rules import evaluate_rules, infer_evidence_path, load_json, max_status
-from rag_medical.generate_answer import LLMConfig, load_llm_config
+from rag_medical.common.eval_judge import run_llm_judge
+from rag_medical.common.eval_rules import evaluate_rules, infer_evidence_path, load_json, max_status
+from rag_medical.common.generate_answer import LLMConfig, load_llm_config
 
 
 # -----------------------------------------------------------------------------

@@ -5,7 +5,7 @@
 
 set -euo pipefail
 
-PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "${PROJECT_DIR}"
 
 if command -v conda >/dev/null 2>&1; then
@@ -16,7 +16,7 @@ if command -v conda >/dev/null 2>&1; then
   fi
 fi
 
-python -m rag_medical.abstract_chunks \
+python -m rag_medical.english.abstract_chunks \
   --registry data/registry/processed/literature_registry.csv \
   --out data/articles/processed/abstract_chunks.jsonl
 

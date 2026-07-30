@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import json
 
-from rag_medical.rag_answer import build_rag_prompt, make_evidence_records, write_rag_package
+from rag_medical.common.rag_answer import build_rag_prompt, make_evidence_records, write_rag_package
 
 
 def sample_search_results() -> list[dict]:

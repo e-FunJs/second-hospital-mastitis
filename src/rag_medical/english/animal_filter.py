@@ -2,9 +2,9 @@
 用途：在第一轮严格医学筛选之后，用本地 BGE 模型复核动物乳腺炎污染。
 
 运行顺序：
-    1. ``bash scripts/filter_corpus.sh``
-    2. ``bash scripts/animal_filter.sh``
-    3. ``bash scripts/build_strict_index.sh``
+    1. ``bash scripts/english/filter_corpus.sh``
+    2. ``bash scripts/english/animal_filter.sh``
+    3. ``bash scripts/english/build_strict_index.sh``
 
 默认输入：
     - data/registry/filtered/literature_registry_{strict,review,excluded}.csv
@@ -37,7 +37,7 @@ from typing import Any, Iterable
 
 import yaml
 
-from rag_medical.animal_rules import (
+from rag_medical.english.animal_rules import (
     Anchor,
     ArticleDecision,
     SemanticConfig,
@@ -46,7 +46,11 @@ from rag_medical.animal_rules import (
     extract_anchors,
     top_k_mean_similarity,
 )
-from rag_medical.build_embeddings import encode_texts, load_sentence_transformer, resolve_device
+from rag_medical.common.build_embeddings import (
+    encode_texts,
+    load_sentence_transformer,
+    resolve_device,
+)
 
 
 # -----------------------------------------------------------------------------
@@ -559,7 +563,7 @@ def main(argv: list[str] | None = None) -> int:
         print("first-pass filter outputs are missing:", file=sys.stderr)
         for path in missing:
             print(f"  {path}", file=sys.stderr)
-        print("run: bash scripts/filter_corpus.sh", file=sys.stderr)
+        print("run: bash scripts/english/filter_corpus.sh", file=sys.stderr)
         return 2
 
     model_path = args.model_path or model_path_from_config(args.config)

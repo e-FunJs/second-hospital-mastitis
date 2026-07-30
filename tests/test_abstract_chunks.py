@@ -5,8 +5,8 @@ from __future__ import annotations
 import csv
 import json
 
-from rag_medical.abstract_chunks import build_abstract_chunks, registry_rows_to_chunks
-from rag_medical.combine_chunks import combine_chunk_files
+from rag_medical.english.abstract_chunks import build_abstract_chunks, registry_rows_to_chunks
+from rag_medical.common.combine_chunks import combine_chunk_files
 
 
 def test_registry_rows_to_chunks_skips_full_text_and_empty_abstracts() -> None:

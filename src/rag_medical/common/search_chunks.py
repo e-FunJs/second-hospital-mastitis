@@ -16,8 +16,12 @@ from typing import Any
 import faiss
 import numpy as np
 
-from rag_medical.build_embeddings import build_embedding_text, model_path_from_config, resolve_device
-from rag_medical.build_faiss_index import read_metadata_jsonl
+from rag_medical.common.build_embeddings import (
+    build_embedding_text,
+    model_path_from_config,
+    resolve_device,
+)
+from rag_medical.common.build_faiss_index import read_metadata_jsonl
 
 
 # -----------------------------------------------------------------------------

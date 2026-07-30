@@ -20,7 +20,7 @@ from pathlib import Path
 
 import yaml
 
-from rag_medical.schema import LiteratureRecord
+from rag_medical.english.schema import LiteratureRecord
 
 
 EUTILS_BASE = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"

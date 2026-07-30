@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from rag_medical.search_pubmed import load_pubmed_queries
+from rag_medical.english.search_pubmed import load_pubmed_queries
 
 
 def test_load_pubmed_queries_includes_treatment_expansion_queries() -> None:

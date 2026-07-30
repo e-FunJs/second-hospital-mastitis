@@ -7,7 +7,7 @@ set -euo pipefail
 
 MAX_RESULTS="${1:-100}"
 
-PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "${PROJECT_DIR}"
 
 if command -v conda >/dev/null 2>&1; then
@@ -20,7 +20,7 @@ fi
 
 mkdir -p data/registry/raw
 
-python -m rag_medical.search_pubmed \
+python -m rag_medical.english.search_pubmed \
   --all \
   --max-results "${MAX_RESULTS}" \
   --out data/registry/raw/pubmed.csv
@@ -31,4 +31,4 @@ find data/registry/raw -maxdepth 1 -type f -name 'pubmed_*.csv' -printf '%f\n' |
 
 echo
 echo "Next step:"
-echo "Run scripts/merge_registry.sh, then fetch PMC Open Access full text."
+echo "Run scripts/english/merge_registry.sh, then fetch PMC Open Access full text."

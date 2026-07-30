@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from rag_medical.eval_judge import build_judge_prompt, parse_judge_response
+from rag_medical.common.eval_judge import build_judge_prompt, parse_judge_response
 
 
 def sample_evidence() -> list[dict]:

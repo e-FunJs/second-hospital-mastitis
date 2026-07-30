@@ -10,7 +10,7 @@ import json
 import torch
 from transformers.tokenization_utils_base import BatchEncoding
 
-from rag_medical.generate_answer import (
+from rag_medical.common.generate_answer import (
     GenerationConfig,
     extract_model_inputs,
     build_answer_payload,

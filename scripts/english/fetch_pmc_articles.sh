@@ -7,7 +7,7 @@ set -euo pipefail
 
 LIMIT="${1:-}"
 
-PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "${PROJECT_DIR}"
 
 if command -v conda >/dev/null 2>&1; then
@@ -21,7 +21,7 @@ fi
 mkdir -p data/articles/raw/pmc_xml data/articles/processed
 
 CMD=(
-  python -m rag_medical.fetch_pmc_articles
+  python -m rag_medical.english.fetch_pmc_articles
   --registry data/registry/processed/literature_registry.csv
   --out-dir data/articles/raw/pmc_xml
   --manifest data/articles/processed/pmc_download_manifest.csv

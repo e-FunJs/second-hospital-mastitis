@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 
-from rag_medical.evaluate_answer import (
+from rag_medical.common.evaluate_answer import (
     build_evaluation_report,
     load_answer_text,
     output_path_for_answer,
