@@ -1,7 +1,7 @@
 """
 用途：合并不同 PubMed query 产生的 registry CSV，并按 PMID/PMCID/DOI 去重。
-输入：data/registry/raw/*.csv。
-输出：data/registry/processed/literature_registry.csv 与 literature_registry_summary.md。
+输入：data/registry/english/raw/*.csv。
+输出：data/registry/english/processed/literature_registry.csv 与 literature_registry_summary.md。
 说明：这是文献元数据进入后续下载、解析、筛选流程前的汇总步骤。
 """
 
@@ -180,16 +180,16 @@ def write_summary(rows: list[dict[str, str]], out_path: Path) -> None:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Merge and deduplicate PubMed registry CSV files.")
-    parser.add_argument("--source-dir", type=Path, default=Path("data/registry/raw"))
+    parser.add_argument("--source-dir", type=Path, default=Path("data/registry/english/raw"))
     parser.add_argument(
         "--out",
         type=Path,
-        default=Path("data/registry/processed/literature_registry.csv"),
+        default=Path("data/registry/english/processed/literature_registry.csv"),
     )
     parser.add_argument(
         "--summary",
         type=Path,
-        default=Path("data/registry/processed/literature_registry_summary.md"),
+        default=Path("data/registry/english/processed/literature_registry_summary.md"),
     )
     args = parser.parse_args(argv)
 

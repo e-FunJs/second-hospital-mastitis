@@ -1,7 +1,7 @@
 """
 用途：合并全文 chunk 与摘要 chunk，形成统一的 RAG 语料文件。
 输入：article_chunks.jsonl、abstract_chunks.jsonl 等一个或多个 JSONL。
-输出：默认 data/articles/processed/rag_chunks.jsonl。
+输出：默认 data/articles/processed/combined/rag_chunks.jsonl。
 说明：按 chunk_id 去重；不重新切分、不生成 embedding、不建立索引。
 """
 
@@ -86,7 +86,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         required=True,
         help="Input chunk JSONL path. Pass multiple --input values in priority order.",
     )
-    parser.add_argument("--out", type=Path, default=Path("data/articles/processed/rag_chunks.jsonl"))
+    parser.add_argument(
+        "--out",
+        type=Path,
+        default=Path("data/articles/processed/combined/rag_chunks.jsonl"),
+    )
     return parser.parse_args(argv)
 
 

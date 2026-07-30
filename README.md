@@ -34,16 +34,46 @@ python -m pip install -e .
 
 Dependencies are listed in `pyproject.toml`.
 
+The Chinese OCR pipeline additionally requires the system commands `pdfinfo`,
+`pdftotext`, `pdftoppm` and Tesseract with `chi_sim` and `eng` language data.
+
 ## Code Layout
 
 - `src/rag_medical/english/`: PubMed/PMC acquisition, XML parsing, English
   semantic chunking, strict medical filtering and animal-literature filtering.
+- `src/rag_medical/chinese/`: CNKI PDF text extraction, Chinese OCR,
+  section-aware semantic chunking and Chinese medical filtering.
 - `src/rag_medical/common/`: language-independent embedding, FAISS indexing,
-  retrieval, answer generation and answer evaluation.
+  corpus validation, retrieval, answer generation and answer evaluation.
 - `scripts/english/`: entry points for the English literature pipeline.
+- `scripts/chinese/`: entry points for the Chinese literature pipeline.
 - `scripts/rag/`: shared embedding, retrieval, generation and evaluation entry points.
 - `scripts/setup/`: server environment setup.
 - `scripts/legacy/`: obsolete scripts retained only for historical reference.
+
+## Data Layout
+
+```text
+data/
+├── articles/
+│   ├── raw/
+│   │   ├── english/pmc_xml/
+│   │   └── chinese/cnki_pdf/
+│   └── processed/
+│       ├── english/
+│       ├── chinese/
+│       └── combined/
+├── registry/
+│   ├── english/
+│   └── chinese/
+└── index/
+    ├── english/{broad,strict}/
+    ├── chinese/strict/
+    └── combined/
+```
+
+Raw literature, processed text, embeddings and indexes remain local and are not
+committed to Git.
 
 ## Day 1 Deliverables
 
@@ -67,10 +97,10 @@ bash scripts/english/run_pubmed_searches.sh 100
 This creates short, stable CSV files by query type:
 
 ```text
-data/registry/raw/core.csv
-data/registry/raw/outcome.csv
-data/registry/raw/ultrasound.csv
-data/registry/raw/therapy.csv
+data/registry/english/raw/core.csv
+data/registry/english/raw/outcome.csv
+data/registry/english/raw/ultrasound.csv
+data/registry/english/raw/therapy.csv
 ```
 
 You can inspect or edit the configured queries in `configs/queries.yaml`.
@@ -84,8 +114,8 @@ bash scripts/english/merge_registry.sh
 This creates:
 
 ```text
-data/registry/processed/literature_registry.csv
-data/registry/processed/literature_registry_summary.md
+data/registry/english/processed/literature_registry.csv
+data/registry/english/processed/literature_registry_summary.md
 ```
 
 Download PMC XML full text for records with PMCID:
@@ -103,8 +133,8 @@ bash scripts/english/fetch_pmc_articles.sh 3
 This creates:
 
 ```text
-data/articles/raw/pmc_xml/PMC*.xml
-data/articles/processed/pmc_download_manifest.csv
+data/articles/raw/english/pmc_xml/PMC*.xml
+data/articles/processed/english/pmc_download_manifest.csv
 ```
 
 Parse downloaded PMC XML into paragraph-level article sections:
@@ -122,8 +152,38 @@ bash scripts/english/parse_pmc_xml.sh 3
 This creates:
 
 ```text
-data/articles/processed/article_sections.jsonl
-data/articles/processed/article_parse_manifest.csv
+data/articles/processed/english/article_sections.jsonl
+data/articles/processed/english/article_parse_manifest.csv
+```
+
+## Chinese Literature
+
+Parse CNKI PDF pages, using Chinese OCR only when a page has no usable text layer:
+
+```bash
+bash scripts/chinese/parse_pdfs.sh
+```
+
+The parser processes eight PDFs concurrently by default. On a smaller machine,
+reduce the load with `CNKI_PARSE_WORKERS=2 bash scripts/chinese/parse_pdfs.sh`.
+
+Build section-aware semantic chunks with the local BGE-M3 model:
+
+```bash
+bash scripts/chinese/semantic_chunk.sh
+```
+
+Apply the auditable Chinese medical strict/review/excluded filter:
+
+```bash
+bash scripts/chinese/filter_corpus.sh
+```
+
+Check that the strict Chinese chunks are ready for the shared embedding module,
+without generating embeddings or an index:
+
+```bash
+bash scripts/rag/check_corpus.sh
 ```
 
 ## Recommended Workflow

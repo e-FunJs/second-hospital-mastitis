@@ -3,13 +3,13 @@
 # 前置步骤：
 #   1. bash scripts/english/filter_corpus.sh
 #   2. bash scripts/english/animal_filter.sh
-# 输入：data/articles/processed/semantic/rag_chunks_strict.jsonl。
-# 输出：data/index_strict/chunk_embeddings.npy、chunk_metadata.jsonl、faiss.index 与两个 manifest。
+# 输入：data/articles/processed/english/semantic/rag_chunks_strict.jsonl。
+# 输出：data/index/english/strict/chunk_embeddings.npy、chunk_metadata.jsonl、faiss.index 与两个 manifest。
 
 set -euo pipefail
 
 LIMIT="${1:-}"
-STRICT_CHUNKS="data/articles/processed/semantic/rag_chunks_strict.jsonl"
+STRICT_CHUNKS="data/articles/processed/english/semantic/rag_chunks_strict.jsonl"
 
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "${PROJECT_DIR}"
@@ -28,14 +28,14 @@ if [[ ! -f "${STRICT_CHUNKS}" ]]; then
   exit 2
 fi
 
-mkdir -p data/index_strict
+mkdir -p data/index/english/strict
 
 EMBED_CMD=(
   python -m rag_medical.common.build_embeddings
   --input "${STRICT_CHUNKS}"
-  --embedding-out data/index_strict/chunk_embeddings.npy
-  --metadata-out data/index_strict/chunk_metadata.jsonl
-  --manifest data/index_strict/embedding_manifest.json
+  --embedding-out data/index/english/strict/chunk_embeddings.npy
+  --metadata-out data/index/english/strict/chunk_metadata.jsonl
+  --manifest data/index/english/strict/embedding_manifest.json
   --config configs/embedding.yaml
 )
 
@@ -46,16 +46,16 @@ fi
 "${EMBED_CMD[@]}"
 
 python -m rag_medical.common.build_faiss_index \
-  --embeddings data/index_strict/chunk_embeddings.npy \
-  --metadata data/index_strict/chunk_metadata.jsonl \
-  --index-out data/index_strict/faiss.index \
-  --manifest data/index_strict/faiss_manifest.json
+  --embeddings data/index/english/strict/chunk_embeddings.npy \
+  --metadata data/index/english/strict/chunk_metadata.jsonl \
+  --index-out data/index/english/strict/faiss.index \
+  --manifest data/index/english/strict/faiss_manifest.json
 
 echo
 echo "Generated final strict index files:"
 ls -lh \
-  data/index_strict/chunk_embeddings.npy \
-  data/index_strict/chunk_metadata.jsonl \
-  data/index_strict/embedding_manifest.json \
-  data/index_strict/faiss.index \
-  data/index_strict/faiss_manifest.json
+  data/index/english/strict/chunk_embeddings.npy \
+  data/index/english/strict/chunk_metadata.jsonl \
+  data/index/english/strict/embedding_manifest.json \
+  data/index/english/strict/faiss.index \
+  data/index/english/strict/faiss_manifest.json

@@ -1,7 +1,7 @@
 """
 用途：根据文献 registry 中的 PMCID 下载 PMC Open Access XML 全文。
-输入：data/registry/processed/literature_registry.csv。
-输出：data/articles/raw/pmc_xml/*.xml 与 pmc_download_manifest.csv。
+输入：data/registry/english/processed/literature_registry.csv。
+输出：data/articles/raw/english/pmc_xml/*.xml 与 pmc_download_manifest.csv。
 说明：只有存在 PMCID 且可公开访问的文章才能下载到全文 XML。
 """
 
@@ -162,13 +162,13 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--registry",
         type=Path,
-        default=Path("data/registry/processed/literature_registry.csv"),
+        default=Path("data/registry/english/processed/literature_registry.csv"),
     )
-    parser.add_argument("--out-dir", type=Path, default=Path("data/articles/raw/pmc_xml"))
+    parser.add_argument("--out-dir", type=Path, default=Path("data/articles/raw/english/pmc_xml"))
     parser.add_argument(
         "--manifest",
         type=Path,
-        default=Path("data/articles/processed/pmc_download_manifest.csv"),
+        default=Path("data/articles/processed/english/pmc_download_manifest.csv"),
     )
     parser.add_argument("--limit", type=int, help="Download only the first N PMCID records.")
     parser.add_argument("--sleep", type=float, default=0.34, help="Delay between NCBI requests.")

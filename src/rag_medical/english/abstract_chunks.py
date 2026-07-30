@@ -1,7 +1,7 @@
 """
 用途：把没有 PMC 全文、但有 PubMed 摘要的文献转成 RAG chunk。
-输入：data/registry/processed/literature_registry.csv。
-输出：data/articles/processed/abstract_chunks.jsonl。
+输入：data/registry/english/processed/literature_registry.csv。
+输出：data/articles/processed/english/abstract_chunks.jsonl。
 说明：只处理摘要文本，不下载全文、不生成 embedding、不建立索引。
 """
 
@@ -130,6 +130,7 @@ def row_to_chunks(row: dict[str, str], max_words: int) -> list[dict[str, Any]]:
             {
                 "chunk_id": f"{id_prefix}{id_value}::Abstract::{chunk_index:03d}",
                 "source_type": "pubmed_abstract",
+                "language": "en",
                 "pmcid": "",
                 "pmid": normalize_space(row.get("pmid")),
                 "doi": normalize_space(row.get("doi")),
@@ -187,8 +188,8 @@ def build_abstract_chunks(
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Build RAG chunks from PubMed abstracts without PMC full text.")
-    parser.add_argument("--registry", type=Path, default=Path("data/registry/processed/literature_registry.csv"))
-    parser.add_argument("--out", type=Path, default=Path("data/articles/processed/abstract_chunks.jsonl"))
+    parser.add_argument("--registry", type=Path, default=Path("data/registry/english/processed/literature_registry.csv"))
+    parser.add_argument("--out", type=Path, default=Path("data/articles/processed/english/abstract_chunks.jsonl"))
     parser.add_argument("--max-words", type=int, default=260)
     parser.add_argument("--include-pmcid-records", action="store_true")
     return parser.parse_args(argv)

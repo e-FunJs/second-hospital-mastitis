@@ -1,7 +1,7 @@
 """
 用途：把已生成的 chunk embedding 矩阵构建成 FAISS 向量索引。
-输入：data/index/chunk_embeddings.npy 与 data/index/chunk_metadata.jsonl。
-输出：data/index/faiss.index 与 data/index/faiss_manifest.json。
+输入：默认 data/index/combined/chunk_embeddings.npy 与 chunk_metadata.jsonl。
+输出：默认 data/index/combined/faiss.index 与 faiss_manifest.json。
 说明：本文件只建索引，不负责生成 embedding，也不负责回答问题。
 """
 
@@ -142,10 +142,26 @@ def build_and_save_index(
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Build a FAISS index from chunk embeddings.")
-    parser.add_argument("--embeddings", type=Path, default=Path("data/index/chunk_embeddings.npy"))
-    parser.add_argument("--metadata", type=Path, default=Path("data/index/chunk_metadata.jsonl"))
-    parser.add_argument("--index-out", type=Path, default=Path("data/index/faiss.index"))
-    parser.add_argument("--manifest", type=Path, default=Path("data/index/faiss_manifest.json"))
+    parser.add_argument(
+        "--embeddings",
+        type=Path,
+        default=Path("data/index/combined/chunk_embeddings.npy"),
+    )
+    parser.add_argument(
+        "--metadata",
+        type=Path,
+        default=Path("data/index/combined/chunk_metadata.jsonl"),
+    )
+    parser.add_argument(
+        "--index-out",
+        type=Path,
+        default=Path("data/index/combined/faiss.index"),
+    )
+    parser.add_argument(
+        "--manifest",
+        type=Path,
+        default=Path("data/index/combined/faiss_manifest.json"),
+    )
     return parser.parse_args(argv)
 
 

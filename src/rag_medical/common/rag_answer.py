@@ -1,7 +1,7 @@
 """
 用途：执行第一层 RAG：检索证据并拼接成可交给 LLM 的 prompt。
 输入：用户问题、FAISS index、chunk_metadata.jsonl、embedding 模型配置。
-输出：data/rag/answers/*_evidence.json 与 *_prompt.txt。
+输出：默认 data/rag/answers/combined/*_evidence.json 与 *_prompt.txt。
 说明：本文件不直接调用 LLM；回答生成由 generate_answer.py 完成。
 """
 
@@ -168,19 +168,31 @@ def retrieve_evidence(
 # -----------------------------------------------------------------------------
 # CLI
 # -----------------------------------------------------------------------------
-# 默认输出到 data/rag/answers；该目录会被 .gitignore 忽略，只在服务器本地保留。
+# 默认输出到 data/rag/answers/combined；该目录只在服务器本地保留。
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Build first-layer RAG evidence package and prompt.")
     parser.add_argument("question", help="Question to retrieve evidence for.")
     parser.add_argument("--top-k", type=int, default=8)
-    parser.add_argument("--index", type=Path, default=Path("data/index/faiss.index"))
-    parser.add_argument("--metadata", type=Path, default=Path("data/index/chunk_metadata.jsonl"))
+    parser.add_argument(
+        "--index",
+        type=Path,
+        default=Path("data/index/combined/faiss.index"),
+    )
+    parser.add_argument(
+        "--metadata",
+        type=Path,
+        default=Path("data/index/combined/chunk_metadata.jsonl"),
+    )
     parser.add_argument("--config", type=Path, default=Path("configs/embedding.yaml"))
     parser.add_argument("--model-path", type=Path, help="Override embedding.local_model_path in config.")
     parser.add_argument("--device", default="auto", choices=["auto", "cuda", "cpu"])
-    parser.add_argument("--output-dir", type=Path, default=Path("data/rag/answers"))
+    parser.add_argument(
+        "--output-dir",
+        type=Path,
+        default=Path("data/rag/answers/combined"),
+    )
     parser.add_argument("--query-slug", help="Stable output filename prefix. Defaults to a slug from question.")
     return parser.parse_args(argv)
 

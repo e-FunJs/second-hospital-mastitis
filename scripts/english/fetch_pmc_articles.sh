@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # 用途：根据 registry 中的 PMCID 下载 PMC XML 全文。
-# 输入：data/registry/processed/literature_registry.csv。
-# 输出：data/articles/raw/pmc_xml/*.xml 与 pmc_download_manifest.csv。
+# 输入：data/registry/english/processed/literature_registry.csv。
+# 输出：data/articles/raw/english/pmc_xml/*.xml 与 pmc_download_manifest.csv。
 
 set -euo pipefail
 
@@ -18,13 +18,13 @@ if command -v conda >/dev/null 2>&1; then
   fi
 fi
 
-mkdir -p data/articles/raw/pmc_xml data/articles/processed
+mkdir -p data/articles/raw/english/pmc_xml data/articles/processed/english
 
 CMD=(
   python -m rag_medical.english.fetch_pmc_articles
-  --registry data/registry/processed/literature_registry.csv
-  --out-dir data/articles/raw/pmc_xml
-  --manifest data/articles/processed/pmc_download_manifest.csv
+  --registry data/registry/english/processed/literature_registry.csv
+  --out-dir data/articles/raw/english/pmc_xml
+  --manifest data/articles/processed/english/pmc_download_manifest.csv
 )
 
 if [[ -n "${LIMIT}" ]]; then
@@ -35,9 +35,9 @@ fi
 
 echo
 echo "Downloaded PMC XML files:"
-find data/articles/raw/pmc_xml -maxdepth 1 -type f -name 'PMC*.xml' | wc -l
+find data/articles/raw/english/pmc_xml -maxdepth 1 -type f -name 'PMC*.xml' | wc -l
 
 echo
 echo "Manifest:"
-ls -lh data/articles/processed/pmc_download_manifest.csv
+ls -lh data/articles/processed/english/pmc_download_manifest.csv
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # 用途：解析下载到本地的 PMC XML 全文。
-# 输入：data/articles/raw/pmc_xml/*.xml。
+# 输入：data/articles/raw/english/pmc_xml/*.xml。
 # 输出：article_sections.jsonl 与 article_parse_manifest.csv。
 
 set -euo pipefail
@@ -18,13 +18,13 @@ if command -v conda >/dev/null 2>&1; then
   fi
 fi
 
-mkdir -p data/articles/processed
+mkdir -p data/articles/processed/english
 
 CMD=(
   python -m rag_medical.english.parse_pmc_xml
-  --xml-dir data/articles/raw/pmc_xml
-  --out data/articles/processed/article_sections.jsonl
-  --manifest data/articles/processed/article_parse_manifest.csv
+  --xml-dir data/articles/raw/english/pmc_xml
+  --out data/articles/processed/english/article_sections.jsonl
+  --manifest data/articles/processed/english/article_parse_manifest.csv
 )
 
 if [[ -n "${LIMIT}" ]]; then
@@ -35,9 +35,9 @@ fi
 
 echo
 echo "Parsed article section file:"
-ls -lh data/articles/processed/article_sections.jsonl
+ls -lh data/articles/processed/english/article_sections.jsonl
 
 echo
 echo "Parse manifest:"
-ls -lh data/articles/processed/article_parse_manifest.csv
+ls -lh data/articles/processed/english/article_parse_manifest.csv
 

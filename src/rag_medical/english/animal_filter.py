@@ -7,17 +7,17 @@
     3. ``bash scripts/english/build_strict_index.sh``
 
 默认输入：
-    - data/registry/filtered/literature_registry_{strict,review,excluded}.csv
-    - data/articles/processed/rag_chunks_{strict,review,excluded}.jsonl
-    - data/articles/processed/rag_chunks.jsonl（用于浏览候选文章的全部可用 chunk）
+    - data/registry/english/filtered/literature_registry_{strict,review,excluded}.csv
+    - data/articles/processed/english/rag_chunks_{strict,review,excluded}.jsonl
+    - data/articles/processed/english/rag_chunks.jsonl（用于浏览候选文章的全部可用 chunk）
     - models/bge/bge-m3
 
 默认输出：
-    - data/registry/filtered/semantic/literature_registry_{strict,review,excluded}.csv
-    - data/registry/filtered/semantic/animal_audit.csv
-    - data/registry/filtered/semantic/anchors.jsonl
-    - data/registry/filtered/semantic/filter_report.md
-    - data/articles/processed/semantic/rag_chunks_{strict,review,excluded}.jsonl
+    - data/registry/english/filtered/semantic/literature_registry_{strict,review,excluded}.csv
+    - data/registry/english/filtered/semantic/animal_audit.csv
+    - data/registry/english/filtered/semantic/anchors.jsonl
+    - data/registry/english/filtered/semantic/filter_report.md
+    - data/articles/processed/english/semantic/rag_chunks_{strict,review,excluded}.jsonl
 
 安全说明：本脚本不覆盖第一轮筛选结果。每篇文献的 BGE 分数、动物 chunk 比例、
 锚点来源和最终去向均会保存，便于医学人员抽查后再调整阈值。
@@ -512,10 +512,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Use corpus-derived BGE anchors to remove animal mastitis articles after first-pass filtering."
     )
-    parser.add_argument("--registry-dir", type=Path, default=Path("data/registry/filtered"))
-    parser.add_argument("--chunk-dir", type=Path, default=Path("data/articles/processed"))
-    parser.add_argument("--registry-out-dir", type=Path, default=Path("data/registry/filtered/semantic"))
-    parser.add_argument("--chunk-out-dir", type=Path, default=Path("data/articles/processed/semantic"))
+    parser.add_argument("--registry-dir", type=Path, default=Path("data/registry/english/filtered"))
+    parser.add_argument("--chunk-dir", type=Path, default=Path("data/articles/processed/english"))
+    parser.add_argument("--registry-out-dir", type=Path, default=Path("data/registry/english/filtered/semantic"))
+    parser.add_argument("--chunk-out-dir", type=Path, default=Path("data/articles/processed/english/semantic"))
     parser.add_argument("--config", type=Path, default=Path("configs/embedding.yaml"))
     parser.add_argument("--model-path", type=Path)
     parser.add_argument("--device", default="auto", choices=["auto", "cuda", "cpu"])

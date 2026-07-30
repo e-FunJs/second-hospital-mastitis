@@ -283,7 +283,7 @@ def classify_chunk(chunk: dict[str, Any]) -> Decision:
 # -----------------------------------------------------------------------------
 # 文件读写与决策标注
 # -----------------------------------------------------------------------------
-# 输出不覆盖原始 broad corpus，而是写入 data/registry/filtered 与 strict chunk 文件。
+# 输出不覆盖原始 broad corpus，而是写入 data/registry/english/filtered 与 strict chunk 文件。
 # 每条记录都附带分数和命中词，方便医学人工抽查。
 
 
@@ -516,16 +516,16 @@ def write_report(
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Strictly filter RAG corpus for human non-puerperal mastitis medical evidence.")
-    parser.add_argument("--registry-in", type=Path, default=Path("data/registry/processed/literature_registry.csv"))
-    parser.add_argument("--chunks-in", type=Path, default=Path("data/articles/processed/rag_chunks.jsonl"))
-    parser.add_argument("--registry-strict-out", type=Path, default=Path("data/registry/filtered/literature_registry_strict.csv"))
-    parser.add_argument("--registry-review-out", type=Path, default=Path("data/registry/filtered/literature_registry_review.csv"))
-    parser.add_argument("--registry-excluded-out", type=Path, default=Path("data/registry/filtered/literature_registry_excluded.csv"))
-    parser.add_argument("--chunks-strict-out", type=Path, default=Path("data/articles/processed/rag_chunks_strict.jsonl"))
-    parser.add_argument("--chunks-review-out", type=Path, default=Path("data/articles/processed/rag_chunks_review.jsonl"))
-    parser.add_argument("--chunks-excluded-out", type=Path, default=Path("data/articles/processed/rag_chunks_excluded.jsonl"))
-    parser.add_argument("--report-out", type=Path, default=Path("data/registry/filtered/filter_report.md"))
-    parser.add_argument("--registry-view-dir", type=Path, default=Path("data/registry/filtered/view"))
+    parser.add_argument("--registry-in", type=Path, default=Path("data/registry/english/processed/literature_registry.csv"))
+    parser.add_argument("--chunks-in", type=Path, default=Path("data/articles/processed/english/rag_chunks.jsonl"))
+    parser.add_argument("--registry-strict-out", type=Path, default=Path("data/registry/english/filtered/literature_registry_strict.csv"))
+    parser.add_argument("--registry-review-out", type=Path, default=Path("data/registry/english/filtered/literature_registry_review.csv"))
+    parser.add_argument("--registry-excluded-out", type=Path, default=Path("data/registry/english/filtered/literature_registry_excluded.csv"))
+    parser.add_argument("--chunks-strict-out", type=Path, default=Path("data/articles/processed/english/rag_chunks_strict.jsonl"))
+    parser.add_argument("--chunks-review-out", type=Path, default=Path("data/articles/processed/english/rag_chunks_review.jsonl"))
+    parser.add_argument("--chunks-excluded-out", type=Path, default=Path("data/articles/processed/english/rag_chunks_excluded.jsonl"))
+    parser.add_argument("--report-out", type=Path, default=Path("data/registry/english/filtered/filter_report.md"))
+    parser.add_argument("--registry-view-dir", type=Path, default=Path("data/registry/english/filtered/view"))
     return parser.parse_args(argv)
 
 

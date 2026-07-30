@@ -1,6 +1,6 @@
 """
 用途：直接查询 FAISS 索引，查看与问题最相近的 RAG chunk。
-输入：查询文本、data/index/faiss.index、data/index/chunk_metadata.jsonl。
+输入：查询文本、默认 data/index/combined/faiss.index 与 chunk_metadata.jsonl。
 输出：终端打印检索结果；可选 --json-out 保存 JSON。
 说明：这是检索调试工具，不生成 LLM prompt，也不生成最终回答。
 """
@@ -100,8 +100,16 @@ def print_results(results: list[dict[str, Any]]) -> None:
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Search semantic article chunks with BGE + FAISS.")
     parser.add_argument("query", help="Question or search text.")
-    parser.add_argument("--index", type=Path, default=Path("data/index/faiss.index"))
-    parser.add_argument("--metadata", type=Path, default=Path("data/index/chunk_metadata.jsonl"))
+    parser.add_argument(
+        "--index",
+        type=Path,
+        default=Path("data/index/combined/faiss.index"),
+    )
+    parser.add_argument(
+        "--metadata",
+        type=Path,
+        default=Path("data/index/combined/chunk_metadata.jsonl"),
+    )
     parser.add_argument("--config", type=Path, default=Path("configs/embedding.yaml"))
     parser.add_argument("--model-path", type=Path, help="Override embedding.local_model_path in config.")
     parser.add_argument("--top-k", type=int, default=8)

@@ -59,6 +59,30 @@ def test_build_metadata_record_preserves_row_alignment_and_source_fields() -> No
     assert metadata["text"] == "Example chunk text."
 
 
+def test_build_metadata_record_preserves_chinese_page_traceability() -> None:
+    chunk = {
+        "chunk_id": "CNKI-1::SEC::001",
+        "document_id": "CNKI-1",
+        "language": "zh",
+        "source_type": "cnki_pdf",
+        "title": "非哺乳期乳腺炎治疗",
+        "section": "结果",
+        "source_pages": [2, 3],
+        "page_start": 2,
+        "page_end": 3,
+        "extraction_methods": ["native_text", "ocr"],
+        "text_unit_count": 120,
+        "text": "治疗后肿块缩小。",
+    }
+
+    metadata = build_metadata_record(chunk, row_index=3)
+
+    assert metadata["document_id"] == "CNKI-1"
+    assert metadata["language"] == "zh"
+    assert metadata["source_pages"] == [2, 3]
+    assert metadata["extraction_methods"] == ["native_text", "ocr"]
+
+
 def test_write_embedding_outputs_keeps_numpy_and_metadata_order(tmp_path) -> None:
     embeddings = np.array([[1.0, 0.0], [0.0, 1.0]], dtype=np.float32)
     metadata = [

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # 用途：合并全文 chunk 与摘要 chunk，形成 broad RAG 语料。
 # 输入：article_chunks.jsonl 与 abstract_chunks.jsonl。
-# 输出：data/articles/processed/rag_chunks.jsonl。
+# 输出：data/articles/processed/english/rag_chunks.jsonl。
 
 set -euo pipefail
 
@@ -17,10 +17,10 @@ if command -v conda >/dev/null 2>&1; then
 fi
 
 python -m rag_medical.common.combine_chunks \
-  --input data/articles/processed/article_chunks.jsonl \
-  --input data/articles/processed/abstract_chunks.jsonl \
-  --out data/articles/processed/rag_chunks.jsonl
+  --input data/articles/processed/english/article_chunks.jsonl \
+  --input data/articles/processed/english/abstract_chunks.jsonl \
+  --out data/articles/processed/english/rag_chunks.jsonl
 
 echo
 echo "Generated mixed RAG chunk file:"
-ls -lh data/articles/processed/rag_chunks.jsonl
+ls -lh data/articles/processed/english/rag_chunks.jsonl

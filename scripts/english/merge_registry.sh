@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # 用途：合并不同 PubMed 检索结果并去重。
-# 输入：data/registry/raw/*.csv。
-# 输出：data/registry/processed/literature_registry.csv 与 literature_registry_summary.md。
+# 输入：data/registry/english/raw/*.csv。
+# 输出：data/registry/english/processed/literature_registry.csv 与 literature_registry_summary.md。
 
 set -euo pipefail
 
@@ -17,10 +17,10 @@ if command -v conda >/dev/null 2>&1; then
 fi
 
 python -m rag_medical.english.merge_registry \
-  --source-dir data/registry/raw \
-  --out data/registry/processed/literature_registry.csv \
-  --summary data/registry/processed/literature_registry_summary.md
+  --source-dir data/registry/english/raw \
+  --out data/registry/english/processed/literature_registry.csv \
+  --summary data/registry/english/processed/literature_registry_summary.md
 
 echo
 echo "Generated processed registry files:"
-ls -lh data/registry/processed/literature_registry.csv data/registry/processed/literature_registry_summary.md
+ls -lh data/registry/english/processed/literature_registry.csv data/registry/english/processed/literature_registry_summary.md

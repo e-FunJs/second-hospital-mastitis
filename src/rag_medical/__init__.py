@@ -5,5 +5,5 @@
 说明：业务脚本位于同目录其他模块，本文件主要用于包导入。
 """
 
-__all__ = ["common", "english"]
+__all__ = ["chinese", "common", "english"]
 

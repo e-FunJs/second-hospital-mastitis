@@ -1,7 +1,7 @@
 """
 用途:把 RAG chunk 文本编码成向量矩阵，供 FAISS 检索使用。
-输入:默认 data/articles/processed/rag_chunks.jsonl。
-输出:data/index/chunk_embeddings.npy、chunk_metadata.jsonl、embedding_manifest.json。
+输入:默认 data/articles/processed/combined/rag_chunks.jsonl。
+输出:data/index/combined/chunk_embeddings.npy、chunk_metadata.jsonl、embedding_manifest.json。
 说明:metadata 与 embedding 按 row_index 一一对应，后续检索依赖这个对应关系。
 """
 
@@ -76,7 +76,9 @@ def build_metadata_record(chunk: dict[str, Any], row_index: int) -> dict[str, An
     return {
         "row_index": row_index,
         "chunk_id": chunk.get("chunk_id", ""),
-        "source_type": chunk.get("source_type", "pmc_full_text"),
+        "document_id": chunk.get("document_id", ""),
+        "language": chunk.get("language", ""),
+        "source_type": chunk.get("source_type", "unknown"),
         "pmcid": chunk.get("pmcid", ""),
         "pmid": chunk.get("pmid", ""),
         "doi": chunk.get("doi", ""),
@@ -88,9 +90,14 @@ def build_metadata_record(chunk: dict[str, Any], row_index: int) -> dict[str, An
         "source_url": chunk.get("source_url", ""),
         "source_path": chunk.get("source_path", ""),
         "source_paragraph_indices": chunk.get("source_paragraph_indices", []),
+        "source_pages": chunk.get("source_pages", []),
+        "page_start": chunk.get("page_start", ""),
+        "page_end": chunk.get("page_end", ""),
+        "extraction_methods": chunk.get("extraction_methods", []),
         "sentence_start": chunk.get("sentence_start", ""),
         "sentence_end": chunk.get("sentence_end", ""),
         "word_count": chunk.get("word_count", ""),
+        "text_unit_count": chunk.get("text_unit_count", ""),
         "char_count": chunk.get("char_count", ""),
         "text": chunk.get("text", ""),
     }
@@ -238,10 +245,26 @@ def build_embeddings(
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Build BGE embeddings for semantic article chunks.")
-    parser.add_argument("--input", type=Path, default=Path("data/articles/processed/rag_chunks.jsonl"))
-    parser.add_argument("--embedding-out", type=Path, default=Path("data/index/chunk_embeddings.npy"))
-    parser.add_argument("--metadata-out", type=Path, default=Path("data/index/chunk_metadata.jsonl"))
-    parser.add_argument("--manifest", type=Path, default=Path("data/index/embedding_manifest.json"))
+    parser.add_argument(
+        "--input",
+        type=Path,
+        default=Path("data/articles/processed/combined/rag_chunks.jsonl"),
+    )
+    parser.add_argument(
+        "--embedding-out",
+        type=Path,
+        default=Path("data/index/combined/chunk_embeddings.npy"),
+    )
+    parser.add_argument(
+        "--metadata-out",
+        type=Path,
+        default=Path("data/index/combined/chunk_metadata.jsonl"),
+    )
+    parser.add_argument(
+        "--manifest",
+        type=Path,
+        default=Path("data/index/combined/embedding_manifest.json"),
+    )
     parser.add_argument("--config", type=Path, default=Path("configs/embedding.yaml"))
     parser.add_argument("--model-path", type=Path, help="Override embedding.local_model_path in config.")
     parser.add_argument("--device", default="auto", choices=["auto", "cuda", "cpu"])

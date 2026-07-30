@@ -1,6 +1,6 @@
 """
 用途：对 XML 解析出的段落做语义分块，生成适合 RAG 检索的 chunk。
-输入：data/articles/processed/article_sections.jsonl 与 BGE embedding 模型。
+输入：data/articles/processed/english/article_sections.jsonl 与 BGE embedding 模型。
 输出：article_chunks.jsonl 与 chunk_manifest.csv。
 说明：用相邻句群 embedding 相似度寻找话题边界，不是简单按固定字符切分。
 """
@@ -300,6 +300,8 @@ def build_chunk_records(
                 "journal": first.get("journal", ""),
                 "year": first.get("year", ""),
                 "source_path": first.get("source_path", ""),
+                "language": "en",
+                "source_type": "pmc_full_text",
                 "section": section,
                 "chunk_index": chunk_index,
                 "source_paragraph_indices": paragraph_indices,
@@ -492,9 +494,9 @@ def chunk_records(
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Semantic chunk PMC article sections with BGE embeddings.")
-    parser.add_argument("--input", type=Path, default=Path("data/articles/processed/article_sections.jsonl"))
-    parser.add_argument("--out", type=Path, default=Path("data/articles/processed/article_chunks.jsonl"))
-    parser.add_argument("--manifest", type=Path, default=Path("data/articles/processed/chunk_manifest.csv"))
+    parser.add_argument("--input", type=Path, default=Path("data/articles/processed/english/article_sections.jsonl"))
+    parser.add_argument("--out", type=Path, default=Path("data/articles/processed/english/article_chunks.jsonl"))
+    parser.add_argument("--manifest", type=Path, default=Path("data/articles/processed/english/chunk_manifest.csv"))
     parser.add_argument("--model-path", type=Path, default=Path("models/bge/bge-m3"))
     parser.add_argument("--device", default="auto", choices=["auto", "cuda", "cpu"])
     parser.add_argument("--batch-size", type=int, default=16)

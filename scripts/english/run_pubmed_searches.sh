@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # 用途：批量运行 configs/queries.yaml 中全部 PubMed 检索 query。
 # 输入：configs/queries.yaml。
-# 输出：data/registry/raw/pubmed_<query_key>.csv。
+# 输出：data/registry/english/raw/pubmed_<query_key>.csv。
 
 set -euo pipefail
 
@@ -18,16 +18,16 @@ if command -v conda >/dev/null 2>&1; then
   fi
 fi
 
-mkdir -p data/registry/raw
+mkdir -p data/registry/english/raw
 
 python -m rag_medical.english.search_pubmed \
   --all \
   --max-results "${MAX_RESULTS}" \
-  --out data/registry/raw/pubmed.csv
+  --out data/registry/english/raw/pubmed.csv
 
 echo
 echo "Generated registry files:"
-find data/registry/raw -maxdepth 1 -type f -name 'pubmed_*.csv' -printf '%f\n' | sort
+find data/registry/english/raw -maxdepth 1 -type f -name 'pubmed_*.csv' -printf '%f\n' | sort
 
 echo
 echo "Next step:"

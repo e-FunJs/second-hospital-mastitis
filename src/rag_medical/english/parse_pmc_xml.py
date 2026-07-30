@@ -1,6 +1,6 @@
 """
 用途：解析 PMC XML 全文，抽取文章标题、章节、段落等结构化文本。
-输入：data/articles/raw/pmc_xml/*.xml。
+输入：data/articles/raw/english/pmc_xml/*.xml。
 输出：article_sections.jsonl 与 article_parse_manifest.csv。
 说明：输出仍是段落级文本，不是最终 RAG chunk；后续还要语义切分。
 """
@@ -361,16 +361,16 @@ def parse_directory(
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Parse PMC XML full text into paragraph-level JSONL.")
-    parser.add_argument("--xml-dir", type=Path, default=Path("data/articles/raw/pmc_xml"))
+    parser.add_argument("--xml-dir", type=Path, default=Path("data/articles/raw/english/pmc_xml"))
     parser.add_argument(
         "--out",
         type=Path,
-        default=Path("data/articles/processed/article_sections.jsonl"),
+        default=Path("data/articles/processed/english/article_sections.jsonl"),
     )
     parser.add_argument(
         "--manifest",
         type=Path,
-        default=Path("data/articles/processed/article_parse_manifest.csv"),
+        default=Path("data/articles/processed/english/article_parse_manifest.csv"),
     )
     parser.add_argument("--min-chars", type=int, default=80)
     parser.add_argument("--limit", type=int, help="Parse only the first N XML files.")

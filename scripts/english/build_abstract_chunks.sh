@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # 用途：把没有 PMC 全文的 PubMed 摘要转成 RAG chunk。
-# 输入：data/registry/processed/literature_registry.csv。
-# 输出：data/articles/processed/abstract_chunks.jsonl。
+# 输入：data/registry/english/processed/literature_registry.csv。
+# 输出：data/articles/processed/english/abstract_chunks.jsonl。
 
 set -euo pipefail
 
@@ -17,9 +17,9 @@ if command -v conda >/dev/null 2>&1; then
 fi
 
 python -m rag_medical.english.abstract_chunks \
-  --registry data/registry/processed/literature_registry.csv \
-  --out data/articles/processed/abstract_chunks.jsonl
+  --registry data/registry/english/processed/literature_registry.csv \
+  --out data/articles/processed/english/abstract_chunks.jsonl
 
 echo
 echo "Generated abstract chunk file:"
-ls -lh data/articles/processed/abstract_chunks.jsonl
+ls -lh data/articles/processed/english/abstract_chunks.jsonl

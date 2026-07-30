@@ -3,8 +3,8 @@
 # 前置步骤：bash scripts/english/filter_corpus.sh
 # 输入：第一轮 registry/chunk 文件、broad rag_chunks.jsonl 与 models/bge/bge-m3。
 # 输出：
-#   data/registry/filtered/semantic/（最终 registry、锚点、审计表和报告）
-#   data/articles/processed/semantic/（最终 strict/review/excluded chunk）
+#   data/registry/english/filtered/semantic/（最终 registry、锚点、审计表和报告）
+#   data/articles/processed/english/semantic/（最终 strict/review/excluded chunk）
 
 set -euo pipefail
 
@@ -24,12 +24,12 @@ python -m rag_medical.english.animal_filter "$@"
 echo
 echo "Generated animal semantic filter files:"
 ls -lh \
-  data/registry/filtered/semantic/literature_registry_strict.csv \
-  data/registry/filtered/semantic/literature_registry_review.csv \
-  data/registry/filtered/semantic/literature_registry_excluded.csv \
-  data/registry/filtered/semantic/animal_audit.csv \
-  data/registry/filtered/semantic/anchors.jsonl \
-  data/registry/filtered/semantic/filter_report.md \
-  data/articles/processed/semantic/rag_chunks_strict.jsonl \
-  data/articles/processed/semantic/rag_chunks_review.jsonl \
-  data/articles/processed/semantic/rag_chunks_excluded.jsonl
+  data/registry/english/filtered/semantic/literature_registry_strict.csv \
+  data/registry/english/filtered/semantic/literature_registry_review.csv \
+  data/registry/english/filtered/semantic/literature_registry_excluded.csv \
+  data/registry/english/filtered/semantic/animal_audit.csv \
+  data/registry/english/filtered/semantic/anchors.jsonl \
+  data/registry/english/filtered/semantic/filter_report.md \
+  data/articles/processed/english/semantic/rag_chunks_strict.jsonl \
+  data/articles/processed/english/semantic/rag_chunks_review.jsonl \
+  data/articles/processed/english/semantic/rag_chunks_excluded.jsonl

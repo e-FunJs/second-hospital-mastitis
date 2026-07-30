@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # 用途：对解析后的文章段落做语义分块。
-# 输入：data/articles/processed/article_sections.jsonl。
+# 输入：data/articles/processed/english/article_sections.jsonl。
 # 输出：article_chunks.jsonl 与 chunk_manifest.csv。
 
 set -euo pipefail
@@ -18,13 +18,13 @@ if command -v conda >/dev/null 2>&1; then
   fi
 fi
 
-mkdir -p data/articles/processed
+mkdir -p data/articles/processed/english
 
 CMD=(
   python -m rag_medical.english.semantic_chunk
-  --input data/articles/processed/article_sections.jsonl
-  --out data/articles/processed/article_chunks.jsonl
-  --manifest data/articles/processed/chunk_manifest.csv
+  --input data/articles/processed/english/article_sections.jsonl
+  --out data/articles/processed/english/article_chunks.jsonl
+  --manifest data/articles/processed/english/chunk_manifest.csv
   --model-path models/bge/bge-m3
 )
 
@@ -36,4 +36,4 @@ fi
 
 echo
 echo "Generated semantic chunk files:"
-ls -lh data/articles/processed/article_chunks.jsonl data/articles/processed/chunk_manifest.csv
+ls -lh data/articles/processed/english/article_chunks.jsonl data/articles/processed/english/chunk_manifest.csv

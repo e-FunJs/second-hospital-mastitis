@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # 用途：执行严格医学筛选，生成 strict/review/excluded 三层语料。
-# 输入：data/registry/processed/literature_registry.csv 与 data/articles/processed/rag_chunks.jsonl。
-# 输出：data/registry/filtered/*、data/registry/filtered/view/*_view.csv/tsv 与 rag_chunks_{strict,review,excluded}.jsonl。
+# 输入：data/registry/english/processed/literature_registry.csv 与 data/articles/processed/english/rag_chunks.jsonl。
+# 输出：data/registry/english/filtered/*、data/registry/english/filtered/view/*_view.csv/tsv 与 rag_chunks_{strict,review,excluded}.jsonl。
 
 set -euo pipefail
 
@@ -21,16 +21,16 @@ python -m rag_medical.english.filter_corpus "$@"
 echo
 echo "Generated strict corpus files:"
 ls -lh \
-  data/registry/filtered/literature_registry_strict.csv \
-  data/registry/filtered/literature_registry_review.csv \
-  data/registry/filtered/literature_registry_excluded.csv \
-  data/registry/filtered/filter_report.md \
-  data/registry/filtered/view/literature_registry_strict_view.csv \
-  data/registry/filtered/view/literature_registry_review_view.csv \
-  data/registry/filtered/view/literature_registry_excluded_view.csv \
-  data/registry/filtered/view/literature_registry_strict_view.tsv \
-  data/registry/filtered/view/literature_registry_review_view.tsv \
-  data/registry/filtered/view/literature_registry_excluded_view.tsv \
-  data/articles/processed/rag_chunks_strict.jsonl \
-  data/articles/processed/rag_chunks_review.jsonl \
-  data/articles/processed/rag_chunks_excluded.jsonl
+  data/registry/english/filtered/literature_registry_strict.csv \
+  data/registry/english/filtered/literature_registry_review.csv \
+  data/registry/english/filtered/literature_registry_excluded.csv \
+  data/registry/english/filtered/filter_report.md \
+  data/registry/english/filtered/view/literature_registry_strict_view.csv \
+  data/registry/english/filtered/view/literature_registry_review_view.csv \
+  data/registry/english/filtered/view/literature_registry_excluded_view.csv \
+  data/registry/english/filtered/view/literature_registry_strict_view.tsv \
+  data/registry/english/filtered/view/literature_registry_review_view.tsv \
+  data/registry/english/filtered/view/literature_registry_excluded_view.tsv \
+  data/articles/processed/english/rag_chunks_strict.jsonl \
+  data/articles/processed/english/rag_chunks_review.jsonl \
+  data/articles/processed/english/rag_chunks_excluded.jsonl

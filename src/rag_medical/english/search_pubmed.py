@@ -1,7 +1,7 @@
 """
 用途：按 configs/queries.yaml 中的 query 检索 PubMed 文献元数据。
 输入：query-key 或自定义 PubMed query。
-输出：data/registry/raw/pubmed_<query_key>.csv。
+输出：data/registry/english/raw/pubmed_<query_key>.csv。
 说明：只获得题名、摘要、PMID、PMCID 等元数据，不下载全文。
 """
 
@@ -228,7 +228,11 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--query", help="Custom PubMed query. Overrides --query-key.")
     parser.add_argument("--max-results", type=int, default=50)
-    parser.add_argument("--out", type=Path, default=Path("data/registry/pubmed_results.csv"))
+    parser.add_argument(
+        "--out",
+        type=Path,
+        default=Path("data/registry/english/raw/pubmed_results.csv"),
+    )
     parser.add_argument("--sleep", type=float, default=0.34, help="Delay between NCBI calls.")
     parser.add_argument(
         "--insecure",
