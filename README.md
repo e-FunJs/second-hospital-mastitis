@@ -186,6 +186,19 @@ without generating embeddings or an index:
 bash scripts/rag/check_corpus.sh
 ```
 
+Build and validate the complete Chinese strict embedding and FAISS index:
+
+```bash
+bash scripts/rag/build_chinese_index.sh
+bash scripts/rag/test_chinese_index.sh
+```
+
+For a 32-chunk smoke build, which writes to `data/index/chinese/smoke/`:
+
+```bash
+bash scripts/rag/build_chinese_index.sh 32
+```
+
 ## Recommended Workflow
 
 1. Use `rag_medical.english.search_pubmed` to create the English literature registry.

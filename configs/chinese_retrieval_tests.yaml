@@ -1,0 +1,43 @@
+# 用途：中文 strict 索引的真实语义检索冒烟问题。
+# 输入：由 retrieval_smoke.py 读取。
+# 输出：每个问题的关键词命中情况写入 retrieval_smoke_report.json。
+
+queries:
+  - id: anti_tb_combination
+    query: "利福平、异烟肼和乙胺丁醇联合治疗非哺乳期乳腺炎的疗效如何？"
+    expected_any:
+      - "利福平"
+      - "异烟肼"
+      - "乙胺丁醇"
+      - "抗结核"
+
+  - id: steroid_treatment
+    query: "糖皮质激素或甲泼尼龙治疗肉芽肿性乳腺炎有哪些临床效果？"
+    expected_any:
+      - "甲泼尼龙"
+      - "泼尼松"
+      - "激素"
+      - "糖皮质激素"
+
+  - id: recurrent_mastitis
+    query: "复发性非哺乳期乳腺炎可以采用哪些药物或联合治疗方案？"
+    expected_any:
+      - "复发"
+      - "联合治疗"
+      - "药物治疗"
+
+  - id: treatment_duration
+    query: "非哺乳期乳腺炎的药物治疗周期和疗程通常如何确定？"
+    expected_any:
+      - "疗程"
+      - "治疗周期"
+      - "个月"
+      - "周"
+
+  - id: corynebacterium_antibiotics
+    query: "克氏棒状杆菌相关乳腺炎如何根据药敏结果选择抗生素？"
+    expected_any:
+      - "克氏棒状杆菌"
+      - "药敏"
+      - "抗生素"
+      - "敏感"
