@@ -1,7 +1,7 @@
 """
 用途：执行第一层 RAG，检索并重排中英文证据。
 输入：用户问题、固定的中文/英文 strict FAISS index、chunk_metadata.jsonl、模型配置。
-输出：默认 data/rag/answers/bilingual/*_evidence.json 及对应 retrieval trace。
+输出：默认 data/rag/answers/bilingual/*_evidence.json、retrieval trace 及 query plan。
 说明：本文件不再构造 prompt；证据先由 step09 清洗，再由 step10 构造报告 prompt。
 """
 
@@ -9,16 +9,24 @@ from __future__ import annotations
 
 import argparse
 import gc
+import hashlib
 import json
+import logging
+import os
 import re
 import sys
+import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 import faiss
+import yaml
 
-from rag_medical.common.expansion.models import RetrievalStage
+from rag_medical.common.expansion.aliases import load_aliases
+from rag_medical.common.expansion.models import QueryRecord, RetrievalStage
+from rag_medical.common.expansion.query_expand import build_query_plan
+from rag_medical.common.expansion.query_plan_io import write_query_plan
 from rag_medical.common.step03_build_embeddings import model_path_from_config, resolve_device
 from rag_medical.common.step04_build_faiss_index import read_metadata_jsonl
 from rag_medical.common.step11_generate_answer import generate_with_local_llm, load_llm_config
@@ -145,6 +153,46 @@ def write_rag_package(
     evidence_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     write_retrieval_trace(trace_path, evidence_records)
     return {"evidence_path": evidence_path}
+
+
+def _try_write_query_plan(
+    question: str,
+    output_dir: Path,
+    query_slug: str,
+) -> Path | None:
+    """独立生成查询计划；失败只记录警告，不影响既有 evidence 和 trace。"""
+    final_path = output_dir / f"{query_slug}_query_plan.json"
+    try:
+        config = yaml.safe_load(
+            Path("configs/evidence_expansion.yaml").read_text(encoding="utf-8")
+        )
+        expansion_config = config["query_expansion"]
+        aliases = load_aliases(Path(expansion_config["aliases_path"]))
+        query_record = QueryRecord(
+            query_id="Q-" + hashlib.sha256(question.encode("utf-8")).hexdigest(),
+            query_text=question,
+        )
+        queries = build_query_plan(
+            query_record,
+            aliases,
+            expansion_config["max_queries"],
+            min_combination_drugs=expansion_config["min_combination_drugs"],
+            max_combination_drugs=expansion_config["max_combination_drugs"],
+        )
+        with tempfile.TemporaryDirectory(
+            prefix=".query_plan_tmp_",
+            dir=output_dir,
+        ) as temporary_directory:
+            temporary_dir = Path(temporary_directory)
+            generated_path = write_query_plan(query_record, queries, temporary_dir)
+            staged_path = temporary_dir / final_path.name
+            if generated_path != staged_path:
+                os.replace(generated_path, staged_path)
+            os.replace(staged_path, final_path)
+        return final_path
+    except Exception:
+        logging.warning("query plan generation failed", exc_info=True)
+        return None
 
 
 # -----------------------------------------------------------------------------
@@ -400,6 +448,7 @@ def main(argv: list[str] | None = None) -> int:
         query_slug,
         query_metadata,
     )
+    _try_write_query_plan(args.question, args.output_dir, query_slug)
 
     print(f"evidence_count={len(evidence_records)}")
     print(f"chinese_query={chinese_question}")
