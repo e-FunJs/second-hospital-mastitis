@@ -21,7 +21,7 @@ fi
 mkdir -p data/articles/processed/english
 
 CMD=(
-  python -m rag_medical.english.parse_pmc_xml
+  python -m rag_medical.english.step05_parse_pmc_xml
   --xml-dir data/articles/raw/english/pmc_xml
   --out data/articles/processed/english/article_sections.jsonl
   --manifest data/articles/processed/english/article_parse_manifest.csv

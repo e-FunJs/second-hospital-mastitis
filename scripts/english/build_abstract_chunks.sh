@@ -16,7 +16,7 @@ if command -v conda >/dev/null 2>&1; then
   fi
 fi
 
-python -m rag_medical.english.abstract_chunks \
+python -m rag_medical.english.step07_abstract_chunks \
   --registry data/registry/english/processed/literature_registry.csv \
   --out data/articles/processed/english/abstract_chunks.jsonl
 

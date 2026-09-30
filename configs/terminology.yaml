@@ -1,0 +1,33 @@
+# 正式词典只读；运行时发现的新形式只能写入 data/terminology，不能改写以下资源。
+dictionary:
+  canonical_path: resources/terminology/canonical_terms.jsonl
+  aliases_path: resources/terminology/aliases.jsonl
+  ngram_size: 3
+
+normalization:
+  enabled_languages: [en]
+  min_fuzzy_length: 6
+  top_margin: 0.05
+  max_fuzzy_candidates: 8
+  max_shortlist_size: 128
+  max_fragment_window: 10
+  max_compact_span_length: 64
+  fuzzy_thresholds:
+    - min_length: 6
+      max_length: 8
+      max_distance: 1
+      min_similarity: 0.83
+    - min_length: 9
+      max_length: 15
+      max_distance: 1
+      min_similarity: 0.88
+    - min_length: 16
+      max_length: 64
+      max_distance: 2
+      min_similarity: 0.875
+
+observations:
+  path: data/terminology/observations.jsonl
+  candidates_path: data/terminology/candidates.jsonl
+  minimum_unique_documents: 3
+  minimum_score: 0.90

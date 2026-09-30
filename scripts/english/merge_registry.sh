@@ -16,7 +16,7 @@ if command -v conda >/dev/null 2>&1; then
   fi
 fi
 
-python -m rag_medical.english.merge_registry \
+python -m rag_medical.english.step03_merge_registry \
   --source-dir data/registry/english/raw \
   --out data/registry/english/processed/literature_registry.csv \
   --summary data/registry/english/processed/literature_registry_summary.md

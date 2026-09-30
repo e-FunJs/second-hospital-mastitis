@@ -17,7 +17,7 @@ if command -v conda >/dev/null 2>&1; then
   fi
 fi
 
-python -m rag_medical.chinese.semantic_chunk "$@"
+python -m rag_medical.chinese.step02_semantic_chunk "$@"
 
 echo
 echo "Generated Chinese semantic chunk files:"

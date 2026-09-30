@@ -24,6 +24,6 @@ if command -v conda >/dev/null 2>&1; then
   fi
 fi
 
-python -m rag_medical.common.evaluate_answer \
+python -m rag_medical.common.step14_evaluate_answer \
   --answer "${ANSWER_PATH}" \
   --mode "${MODE}"

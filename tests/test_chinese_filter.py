@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from rag_medical.chinese.filter_corpus import classify_record, filter_chunks, split_registry
+from rag_medical.chinese.step03_filter_corpus import classify_record, filter_chunks, split_registry
 
 
 def test_classify_target_combination_drug_treatment_as_include() -> None:

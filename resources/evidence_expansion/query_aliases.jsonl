@@ -1,0 +1,33 @@
+{"concept_id":"DIS_GLM","category":"disease","language":"zh","term":"肉芽肿性小叶性乳腺炎","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DIS_GLM","category":"disease","language":"en","term":"granulomatous lobular mastitis","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DIS_GLM","category":"disease","language":"en","term":"GLM","term_kind":"abbreviation","source":"trusted_manual"}
+{"concept_id":"DIS_PDM","category":"disease","language":"zh","term":"导管周围乳腺炎","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DIS_PDM","category":"disease","language":"en","term":"periductal mastitis","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DIS_PDM","category":"disease","language":"en","term":"PDM","term_kind":"abbreviation","source":"trusted_manual"}
+{"concept_id":"DIS_MDE","category":"disease","language":"zh","term":"乳腺导管扩张症","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DIS_MDE","category":"disease","language":"en","term":"mammary duct ectasia","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DIS_MDE","category":"disease","language":"en","term":"MDE","term_kind":"abbreviation","source":"trusted_manual"}
+{"concept_id":"DIS_PCM","category":"disease","language":"zh","term":"浆细胞性乳腺炎","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DIS_PCM","category":"disease","language":"en","term":"plasma cell mastitis","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DIS_PCM","category":"disease","language":"en","term":"PCM","term_kind":"abbreviation","source":"trusted_manual"}
+{"concept_id":"DIS_NPM","category":"disease","language":"zh","term":"非哺乳期乳腺炎","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DIS_NPM","category":"disease","language":"en","term":"non-puerperal mastitis","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DIS_NPM","category":"disease","language":"en","term":"NPM","term_kind":"abbreviation","source":"trusted_manual"}
+{"concept_id":"DRUG_INH","category":"drug","language":"zh","term":"异烟肼","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DRUG_INH","category":"drug","language":"en","term":"isoniazid","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DRUG_INH","category":"drug","language":"en","term":"INH","term_kind":"abbreviation","source":"trusted_manual"}
+{"concept_id":"DRUG_RFP","category":"drug","language":"zh","term":"利福平","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DRUG_RFP","category":"drug","language":"en","term":"rifampicin","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DRUG_RFP","category":"drug","language":"en","term":"rifampin","term_kind":"synonym","source":"trusted_manual"}
+{"concept_id":"DRUG_RFP","category":"drug","language":"en","term":"RFP","term_kind":"abbreviation","source":"trusted_manual"}
+{"concept_id":"DRUG_PZA","category":"drug","language":"zh","term":"吡嗪酰胺","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DRUG_PZA","category":"drug","language":"en","term":"pyrazinamide","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DRUG_PZA","category":"drug","language":"en","term":"PZA","term_kind":"abbreviation","source":"trusted_manual"}
+{"concept_id":"DRUG_EMB","category":"drug","language":"zh","term":"乙胺丁醇","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DRUG_EMB","category":"drug","language":"en","term":"ethambutol","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DRUG_EMB","category":"drug","language":"en","term":"EMB","term_kind":"abbreviation","source":"trusted_manual"}
+{"concept_id":"DRUG_PRED","category":"drug","language":"zh","term":"泼尼松","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DRUG_PRED","category":"drug","language":"en","term":"prednisone","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DRUG_MTX","category":"drug","language":"zh","term":"甲氨蝶呆","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DRUG_MTX","category":"drug","language":"en","term":"methotrexate","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DRUG_MTX","category":"drug","language":"en","term":"MTX","term_kind":"abbreviation","source":"trusted_manual"}

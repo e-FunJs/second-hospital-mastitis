@@ -19,7 +19,7 @@ if command -v conda >/dev/null 2>&1; then
   fi
 fi
 
-python -m rag_medical.common.check_corpus \
+python -m rag_medical.common.step02_check_corpus \
   --input "${INPUT_PATH}" \
   --expected-language zh \
   --report "${REPORT_PATH}"

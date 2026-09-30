@@ -1,0 +1,5 @@
+query_expansion:
+  aliases_path: resources/evidence_expansion/query_aliases.jsonl
+  max_queries: 12
+  min_combination_drugs: 3
+  max_combination_drugs: 4

@@ -31,7 +31,7 @@ fi
 mkdir -p data/index/english/strict
 
 EMBED_CMD=(
-  python -m rag_medical.common.build_embeddings
+  python -m rag_medical.common.step03_build_embeddings
   --input "${STRICT_CHUNKS}"
   --embedding-out data/index/english/strict/chunk_embeddings.npy
   --metadata-out data/index/english/strict/chunk_metadata.jsonl
@@ -45,7 +45,7 @@ fi
 
 "${EMBED_CMD[@]}"
 
-python -m rag_medical.common.build_faiss_index \
+python -m rag_medical.common.step04_build_faiss_index \
   --embeddings data/index/english/strict/chunk_embeddings.npy \
   --metadata data/index/english/strict/chunk_metadata.jsonl \
   --index-out data/index/english/strict/faiss.index \

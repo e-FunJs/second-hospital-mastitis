@@ -19,7 +19,7 @@ if command -v conda >/dev/null 2>&1; then
   fi
 fi
 
-python -m rag_medical.english.animal_filter "$@"
+python -m rag_medical.english.step10_animal_filter "$@"
 
 echo
 echo "Generated animal semantic filter files:"

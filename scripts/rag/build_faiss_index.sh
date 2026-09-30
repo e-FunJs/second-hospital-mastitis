@@ -21,7 +21,7 @@ fi
 
 mkdir -p "${INDEX_DIR}"
 
-python -m rag_medical.common.build_faiss_index \
+python -m rag_medical.common.step04_build_faiss_index \
   --embeddings "${INDEX_DIR}/chunk_embeddings.npy" \
   --metadata "${INDEX_DIR}/chunk_metadata.jsonl" \
   --index-out "${INDEX_DIR}/faiss.index" \

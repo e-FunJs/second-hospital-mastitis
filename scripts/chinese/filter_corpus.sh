@@ -17,7 +17,7 @@ if command -v conda >/dev/null 2>&1; then
   fi
 fi
 
-python -m rag_medical.chinese.filter_corpus "$@"
+python -m rag_medical.chinese.step03_filter_corpus "$@"
 
 echo
 echo "Generated Chinese medical filter files:"

@@ -27,7 +27,7 @@ if command -v conda >/dev/null 2>&1; then
   fi
 fi
 
-python -m rag_medical.common.search_chunks "${QUERY}" \
+python -m rag_medical.common.step06_search_chunks "${QUERY}" \
   --top-k "${TOP_K}" \
   --index "${INDEX_DIR}/faiss.index" \
   --metadata "${INDEX_DIR}/chunk_metadata.jsonl"

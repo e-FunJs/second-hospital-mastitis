@@ -1,13 +1,13 @@
 """第一层 RAG 问答脚本测试。
 
-这里不调用 LLM，只验证 evidence package 和 prompt 是否可追溯、可交给后续 LLM 使用。
+这里不调用 LLM，只验证 step08 输出可追溯的 evidence package，且不提前生成 prompt。
 """
 
 from __future__ import annotations
 
 import json
 
-from rag_medical.common.rag_answer import build_rag_prompt, make_evidence_records, write_rag_package
+from rag_medical.common.step08_rag_answer import make_evidence_records, write_rag_package
 
 
 def sample_search_results() -> list[dict]:
@@ -54,37 +54,21 @@ def test_make_evidence_records_adds_stable_evidence_ids() -> None:
     assert evidence[1]["citation"] == "PMC2 | 2026 | Ultrasound study | Diagnosis > Ultrasonography"
 
 
-def test_build_rag_prompt_contains_policy_question_and_cited_evidence() -> None:
-    question = "What ultrasound findings are common in granulomatous mastitis?"
-    evidence = make_evidence_records(sample_search_results())
-
-    prompt = build_rag_prompt(question, evidence)
-
-    assert "只允许基于下面给定的 Evidence 回答" in prompt
-    assert "证据不足时明确说证据不足" in prompt
-    assert question in prompt
-    assert "[E1]" in prompt
-    assert "[E2]" in prompt
-    assert "Steroids were associated with lesion reduction." in prompt
-
-
-def test_write_rag_package_writes_prompt_and_evidence_json(tmp_path) -> None:
+def test_write_rag_package_writes_only_evidence_json(tmp_path) -> None:
     question = "How are corticosteroids discussed?"
     evidence = make_evidence_records(sample_search_results())
-    prompt = build_rag_prompt(question, evidence)
 
     outputs = write_rag_package(
         output_dir=tmp_path,
         question=question,
         evidence_records=evidence,
-        prompt=prompt,
         query_slug="corticosteroids",
     )
 
     evidence_json = json.loads(outputs["evidence_path"].read_text())
-    prompt_text = outputs["prompt_path"].read_text()
 
     assert evidence_json["question"] == question
     assert evidence_json["evidence"][0]["evidence_id"] == "E1"
-    assert "How are corticosteroids discussed?" in prompt_text
     assert outputs["evidence_path"].name == "corticosteroids_evidence.json"
+    assert set(outputs) == {"evidence_path"}
+    assert not list(tmp_path.glob("*_prompt.txt"))

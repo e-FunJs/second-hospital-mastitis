@@ -21,7 +21,7 @@ fi
 mkdir -p data/articles/raw/english/pmc_xml data/articles/processed/english
 
 CMD=(
-  python -m rag_medical.english.fetch_pmc_articles
+  python -m rag_medical.english.step04_fetch_pmc_articles
   --registry data/registry/english/processed/literature_registry.csv
   --out-dir data/articles/raw/english/pmc_xml
   --manifest data/articles/processed/english/pmc_download_manifest.csv

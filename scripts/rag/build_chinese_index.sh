@@ -26,7 +26,7 @@ if command -v conda >/dev/null 2>&1; then
   fi
 fi
 
-python -m rag_medical.common.check_corpus \
+python -m rag_medical.common.step02_check_corpus \
   --input "${INPUT_PATH}" \
   --expected-language zh \
   --report data/articles/processed/chinese/common_readiness_report.json
@@ -42,7 +42,7 @@ RAG_TIER=strict \
 RAG_INDEX_DIR="${INDEX_DIR}" \
 bash scripts/rag/build_faiss_index.sh
 
-python -m rag_medical.common.validate_index \
+python -m rag_medical.common.step05_validate_index \
   --index-dir "${INDEX_DIR}" \
   --expected-language zh \
   --report "${INDEX_DIR}/index_validation_report.json"

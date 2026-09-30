@@ -16,7 +16,7 @@ if command -v conda >/dev/null 2>&1; then
   fi
 fi
 
-python -m rag_medical.english.filter_corpus "$@"
+python -m rag_medical.english.step08_filter_corpus "$@"
 
 echo
 echo "Generated strict corpus files:"

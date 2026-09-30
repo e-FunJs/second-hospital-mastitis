@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# 用途：调用本地 LLM，根据 RAG prompt 生成回答。
-# 输入：data/rag/answers/*_prompt.txt。
+# 用途：调用本地 Qwen，根据 step10 生成的 RAG prompt 输出报告。
+# 输入：step10_build_prompt.py 生成的 *_prompt.txt。
 # 输出：同名前缀的 *_answer.md 与 *_answer.json。
 
 set -euo pipefail
@@ -25,7 +25,7 @@ if command -v conda >/dev/null 2>&1; then
 fi
 
 CMD=(
-  python -m rag_medical.common.generate_answer
+  python -m rag_medical.common.step11_generate_answer
   --prompt "${PROMPT_PATH}"
   --config configs/llm.yaml
 )

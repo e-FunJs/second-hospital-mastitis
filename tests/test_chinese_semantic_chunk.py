@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from rag_medical.chinese.semantic_chunk import (
+from rag_medical.chinese.step02_semantic_chunk import (
     ChunkConfig,
     build_chunk_records,
     canonical_section_heading,

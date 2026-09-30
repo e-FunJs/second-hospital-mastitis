@@ -1,0 +1,42 @@
+{"concept_id":"DIS_NPM","canonical":"non-puerperal mastitis","language":"en","category":"disease","source":"project_scope","confidence":1.0}
+{"concept_id":"DIS_NLM","canonical":"non-lactational mastitis","language":"en","category":"disease","source":"project_scope","confidence":1.0}
+{"concept_id":"DIS_NLATING_M","canonical":"non-lactating mastitis","language":"en","category":"disease","source":"project_scope","confidence":1.0}
+{"concept_id":"DIS_GM","canonical":"granulomatous mastitis","language":"en","category":"disease","source":"project_scope","confidence":1.0}
+{"concept_id":"DIS_GLM","canonical":"granulomatous lobular mastitis","language":"en","category":"disease","source":"project_scope","confidence":1.0}
+{"concept_id":"DIS_IGM","canonical":"idiopathic granulomatous mastitis","language":"en","category":"disease","source":"project_scope","confidence":1.0}
+{"concept_id":"DIS_IGLM","canonical":"idiopathic granulomatous lobular mastitis","language":"en","category":"disease","source":"project_scope","confidence":1.0}
+{"concept_id":"DIS_PDM","canonical":"periductal mastitis","language":"en","category":"disease","source":"project_scope","confidence":1.0}
+{"concept_id":"DIS_MDE","canonical":"mammary duct ectasia","language":"en","category":"disease","source":"project_scope","confidence":1.0}
+{"concept_id":"DIS_PCM","canonical":"plasma cell mastitis","language":"en","category":"disease","source":"project_scope","confidence":1.0}
+{"concept_id":"DIS_CNGM","canonical":"cystic neutrophilic granulomatous mastitis","language":"en","category":"disease","source":"project_scope","confidence":1.0}
+{"concept_id":"DRUG_RIFAMPICIN","canonical":"rifampicin","language":"en","category":"drug","source":"project_scope","confidence":1.0}
+{"concept_id":"DRUG_RIFAMPIN","canonical":"rifampin","language":"en","category":"drug","source":"project_scope","confidence":1.0}
+{"concept_id":"DRUG_ISONIAZID","canonical":"isoniazid","language":"en","category":"drug","source":"project_scope","confidence":1.0}
+{"concept_id":"DRUG_ETHAMBUTOL","canonical":"ethambutol","language":"en","category":"drug","source":"project_scope","confidence":1.0}
+{"concept_id":"DRUG_PYRAZINAMIDE","canonical":"pyrazinamide","language":"en","category":"drug","source":"project_scope","confidence":1.0}
+{"concept_id":"DRUG_METHOTREXATE","canonical":"methotrexate","language":"en","category":"drug","source":"project_scope","confidence":1.0}
+{"concept_id":"DRUG_AZATHIOPRINE","canonical":"azathioprine","language":"en","category":"drug","source":"project_scope","confidence":1.0}
+{"concept_id":"DRUG_PREDNISONE","canonical":"prednisone","language":"en","category":"drug","source":"project_scope","confidence":1.0}
+{"concept_id":"DRUG_PREDNISOLONE","canonical":"prednisolone","language":"en","category":"drug","source":"project_scope","confidence":1.0}
+{"concept_id":"DRUG_COLCHICINE","canonical":"colchicine","language":"en","category":"drug","source":"project_scope","confidence":1.0}
+{"concept_id":"DRUG_TAMOXIFEN","canonical":"tamoxifen","language":"en","category":"drug","source":"project_scope","confidence":1.0}
+{"concept_id":"ANAT_CELL_WALL","canonical":"cell wall structure","language":"en","category":"anatomy","source":"regression_guard","confidence":1.0}
+{"concept_id":"DIS_NPM","canonical":"非哺乳期乳腺炎","language":"zh","category":"disease","source":"project_scope","confidence":1.0}
+{"concept_id":"DIS_NLM","canonical":"非泌乳期乳腺炎","language":"zh","category":"disease","source":"project_scope","confidence":1.0}
+{"concept_id":"DIS_GM","canonical":"肉芽肿性乳腺炎","language":"zh","category":"disease","source":"project_scope","confidence":1.0}
+{"concept_id":"DIS_GLM","canonical":"肉芽肿性小叶性乳腺炎","language":"zh","category":"disease","source":"project_scope","confidence":1.0}
+{"concept_id":"DIS_IGM","canonical":"特发性肉芽肿性乳腺炎","language":"zh","category":"disease","source":"project_scope","confidence":1.0}
+{"concept_id":"DIS_PDM","canonical":"导管周围乳腺炎","language":"zh","category":"disease","source":"project_scope","confidence":1.0}
+{"concept_id":"DIS_MDE","canonical":"乳腺导管扩张症","language":"zh","category":"disease","source":"project_scope","confidence":1.0}
+{"concept_id":"DIS_PCM","canonical":"浆细胞性乳腺炎","language":"zh","category":"disease","source":"project_scope","confidence":1.0}
+{"concept_id":"DIS_CNGM","canonical":"囊性中性粒细胞肉芽肿性乳腺炎","language":"zh","category":"disease","source":"project_scope","confidence":1.0}
+{"concept_id":"DRUG_RIFAMPICIN","canonical":"利福平","language":"zh","category":"drug","source":"project_scope","confidence":1.0}
+{"concept_id":"DRUG_ISONIAZID","canonical":"异烟肼","language":"zh","category":"drug","source":"project_scope","confidence":1.0}
+{"concept_id":"DRUG_ETHAMBUTOL","canonical":"乙胺丁醇","language":"zh","category":"drug","source":"project_scope","confidence":1.0}
+{"concept_id":"DRUG_PYRAZINAMIDE","canonical":"吡嗪酰胺","language":"zh","category":"drug","source":"project_scope","confidence":1.0}
+{"concept_id":"DRUG_METHOTREXATE","canonical":"甲氨蝶呤","language":"zh","category":"drug","source":"project_scope","confidence":1.0}
+{"concept_id":"DRUG_AZATHIOPRINE","canonical":"硫唑嘌呤","language":"zh","category":"drug","source":"project_scope","confidence":1.0}
+{"concept_id":"DRUG_PREDNISONE","canonical":"泼尼松","language":"zh","category":"drug","source":"project_scope","confidence":1.0}
+{"concept_id":"DRUG_PREDNISOLONE","canonical":"泼尼松龙","language":"zh","category":"drug","source":"project_scope","confidence":1.0}
+{"concept_id":"DRUG_COLCHICINE","canonical":"秋水仙碱","language":"zh","category":"drug","source":"project_scope","confidence":1.0}
+{"concept_id":"DRUG_TAMOXIFEN","canonical":"他莫昔芬","language":"zh","category":"drug","source":"project_scope","confidence":1.0}

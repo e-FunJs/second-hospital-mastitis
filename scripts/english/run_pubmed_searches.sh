@@ -20,7 +20,7 @@ fi
 
 mkdir -p data/registry/english/raw
 
-python -m rag_medical.english.search_pubmed \
+python -m rag_medical.english.step02_search_pubmed \
   --all \
   --max-results "${MAX_RESULTS}" \
   --out data/registry/english/raw/pubmed.csv

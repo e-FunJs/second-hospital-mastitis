@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from rag_medical.common.retrieval_smoke import evaluate_retrieval_result
+from rag_medical.common.step07_retrieval_smoke import evaluate_retrieval_result
 
 
 def test_expected_keyword_and_traceability_pass() -> None:

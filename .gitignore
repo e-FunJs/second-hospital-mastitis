@@ -21,6 +21,12 @@ data/CNKI-*.txt
 restore_pipeline.log
 restore_pipeline.pid
 
+# Generated validation, rebuild, and terminology-candidate outputs.
+cache_output_test/
+data/rebuild/
+data/terminology/*
+!data/terminology/.gitkeep
+
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 !data/index/.gitkeep
@@ -79,3 +85,17 @@ data/rag/*
 # Local LLM weights. Keep directory placeholders only.
 models/llm/*
 !models/llm/.gitkeep
+
+# Local OCR model weights. Keep the directory placeholder only.
+models/ocr/*
+!models/ocr/.gitkeep
+
+# Local cross-encoder reranker weights. Keep the directory placeholder only.
+models/reranker/*
+!models/reranker/.gitkeep
+
+# Public datasets are stored locally and must not be committed.
+datasets/**
+!datasets/README.md
+!datasets/*/
+!datasets/*/SOURCE.md

@@ -18,12 +18,12 @@ if command -v conda >/dev/null 2>&1; then
   fi
 fi
 
-python -m rag_medical.common.validate_index \
+python -m rag_medical.common.step05_validate_index \
   --index-dir "${INDEX_DIR}" \
   --expected-language zh \
   --report "${INDEX_DIR}/index_validation_report.json"
 
-python -m rag_medical.common.retrieval_smoke \
+python -m rag_medical.common.step07_retrieval_smoke \
   --queries configs/chinese_retrieval_tests.yaml \
   --index-dir "${INDEX_DIR}" \
   --report "${INDEX_DIR}/retrieval_smoke_report.json"

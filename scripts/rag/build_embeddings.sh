@@ -26,7 +26,7 @@ fi
 mkdir -p "${INDEX_DIR}"
 
 CMD=(
-  python -m rag_medical.common.build_embeddings
+  python -m rag_medical.common.step03_build_embeddings
   --input "${INPUT_PATH}"
   --embedding-out "${INDEX_DIR}/chunk_embeddings.npy"
   --metadata-out "${INDEX_DIR}/chunk_metadata.jsonl"

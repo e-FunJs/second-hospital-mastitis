@@ -81,7 +81,7 @@ committed to Git.
 - `configs/sources.yaml`: source registry.
 - `configs/queries.yaml`: search terms.
 - `configs/embedding.yaml`: planned embedding and index settings.
-- `src/rag_medical/english/search_pubmed.py`: minimal PubMed metadata search script.
+- `src/rag_medical/english/step02_step02_search_pubmed.py`: minimal PubMed metadata search script.
 - `outputs/data_availability_checklist.md`: variable mapping and data availability checklist.
 - `outputs/endpoint_definitions.md`: initial endpoint framework.
 
@@ -201,7 +201,7 @@ bash scripts/rag/build_chinese_index.sh 32
 
 ## Recommended Workflow
 
-1. Use `rag_medical.english.search_pubmed` to create the English literature registry.
+1. Use `rag_medical.english.step02_search_pubmed` to create the English literature registry.
 2. Manually screen titles/abstracts for disease relevance and treatment relevance.
 3. Prioritize guidelines, expert consensus, systematic reviews, meta-analyses,
    and clinical cohorts.

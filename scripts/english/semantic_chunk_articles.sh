@@ -21,7 +21,7 @@ fi
 mkdir -p data/articles/processed/english
 
 CMD=(
-  python -m rag_medical.english.semantic_chunk
+  python -m rag_medical.english.step06_semantic_chunk
   --input data/articles/processed/english/article_sections.jsonl
   --out data/articles/processed/english/article_chunks.jsonl
   --manifest data/articles/processed/english/chunk_manifest.csv

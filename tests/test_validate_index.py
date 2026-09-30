@@ -5,8 +5,8 @@ from __future__ import annotations
 import faiss
 import numpy as np
 
-from rag_medical.common.build_faiss_index import build_faiss_index
-from rag_medical.common.validate_index import validate_index_artifacts
+from rag_medical.common.step04_build_faiss_index import build_faiss_index
+from rag_medical.common.step05_validate_index import validate_index_artifacts
 
 
 def metadata_record(row_index: int, chunk_id: str) -> dict:

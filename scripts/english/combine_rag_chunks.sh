@@ -16,7 +16,7 @@ if command -v conda >/dev/null 2>&1; then
   fi
 fi
 
-python -m rag_medical.common.combine_chunks \
+python -m rag_medical.common.step01_combine_chunks \
   --input data/articles/processed/english/article_chunks.jsonl \
   --input data/articles/processed/english/abstract_chunks.jsonl \
   --out data/articles/processed/english/rag_chunks.jsonl

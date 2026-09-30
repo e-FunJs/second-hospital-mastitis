@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from rag_medical.common.check_corpus import validate_corpus
+from rag_medical.common.step02_check_corpus import validate_corpus
 
 
 def valid_chinese_chunk() -> dict:

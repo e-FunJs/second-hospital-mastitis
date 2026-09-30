@@ -17,7 +17,7 @@ if command -v conda >/dev/null 2>&1; then
   fi
 fi
 
-python -m rag_medical.chinese.parse_pdf \
+python -m rag_medical.chinese.step01_parse_pdf \
   --workers "${CNKI_PARSE_WORKERS:-8}" \
   "$@"
 

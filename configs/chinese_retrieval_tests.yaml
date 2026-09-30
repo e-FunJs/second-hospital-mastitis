@@ -1,5 +1,5 @@
 # 用途：中文 strict 索引的真实语义检索冒烟问题。
-# 输入：由 retrieval_smoke.py 读取。
+# 输入：由 step07_retrieval_smoke.py 读取。
 # 输出：每个问题的关键词命中情况写入 retrieval_smoke_report.json。
 
 queries:

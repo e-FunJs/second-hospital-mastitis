@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from rag_medical.chinese.parse_pdf import (
+from rag_medical.chinese.step01_parse_pdf import (
     ParseConfig,
     document_id_for_path,
     native_text_is_usable,
