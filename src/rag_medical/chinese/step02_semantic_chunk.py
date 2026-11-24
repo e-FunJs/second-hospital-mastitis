@@ -28,6 +28,7 @@ import re
 import sys
 from collections import OrderedDict
 from dataclasses import dataclass
+from itertools import groupby
 from pathlib import Path
 from typing import Any, Callable, Iterable
 
@@ -332,6 +333,80 @@ def canonical_section_heading(line: str) -> str | None:
     return None
 
 
+def _reading_stream_items(pages, include_references):
+    sections = OrderedDict()
+    section, flow, tail = "正文", 0, ""
+    sources, paragraph_start = [], True
+
+    def emit(text, refs):
+        nonlocal paragraph_start
+        if text:
+            sections.setdefault(section, []).append(dict(
+                text=text, flow_id=flow, block_kind="body", paragraph_start=paragraph_start,
+                page_number=refs[0][0], page_numbers=sorted({p for p, _, _ in refs}),
+                block_ids=list(dict.fromkeys(b for _, b, _ in refs if b)),
+                extraction_method=refs[0][2]))
+            paragraph_start = False
+
+    def end_paragraph():
+        nonlocal tail, sources, paragraph_start
+        emit(tail, sources)
+        tail, sources, paragraph_start = "", [], True
+
+    for page in pages:
+        number, method = int(page["page_number"]), page["extraction_method"]
+        document_title = re.sub(r"\s+", "", page.get("title") or "")
+        text = page["text"]
+        spans = page.get("stream_spans")
+        if spans is None:  # OCR has no trustworthy geometry: do not bridge it to a native page.
+            end_paragraph()
+            flow += 1
+            spans = [(m.start(), m.end(), "", "body") for m in re.finditer(r"[^\r\n]+", text)]
+        previous = 0
+        for start, end, bid, kind in spans:
+            gap = text[previous:start]
+            raw = text[start:end]
+            previous = end
+            if "\x1e" in gap or (start == 0 and kind != "body"):
+                end_paragraph()
+                flow += 1
+            elif "\n\n" in gap:
+                end_paragraph()
+            if kind != "body":
+                if section != "参考文献" or include_references:
+                    items = sections.setdefault(section, [])
+                    if items and items[-1].get("block_ids") == [bid] and items[-1]["flow_id"] == flow:
+                        items[-1]["text"] += "\n" + raw
+                    else:
+                        items.append(dict(text=raw, flow_id=flow, block_kind=kind, page_number=number,
+                                          block_ids=[bid], extraction_method=method))
+                continue
+            is_title = document_title and re.sub(r"\s+", "", raw).strip("《》[]") == document_title
+            parts = [(None, clean_body_line(raw))] if is_title else split_embedded_heading_line(raw)
+            for heading, line in parts:
+                if heading:
+                    end_paragraph()
+                    section, flow = heading, flow + 1
+                elif line and (section != "参考文献" or include_references):
+                    ref = (number, bid, method)
+                    # Consume a visual continuation before asking the old sentence splitter
+                    # for boundaries. Neither a line nor a change of block closes a sentence.
+                    sep = gap if not gap.strip() else " "
+                    if start == 0 or page.get("stream_spans") is None:
+                        sep = " "
+                    sentences, rest = split_complete_sentences(tail + sep + line)
+                    refs = list(dict.fromkeys([*sources, ref]))
+                    for n, sentence in enumerate(sentences):
+                        emit(sentence, refs if n == 0 else [ref])
+                    tail = rest
+                    sources = ([ref] if sentences else refs) if rest else []
+        if (spans and spans[-1][3] != "body") or page.get("stream_spans") is None:
+            end_paragraph()
+            flow += 1
+    end_paragraph()
+    return sections
+
+
 def section_sentence_items(
     page_records: list[dict[str, Any]],
     include_references: bool = False,
@@ -344,11 +419,17 @@ def section_sentence_items(
     carried_tail = ""
     carried_section = ""
 
-    for page_record in sorted(page_records, key=lambda row: int(row.get("page_number") or 0)):
+    ordered_pages = sorted(page_records, key=lambda row: int(row.get("page_number") or 0))
+    if any("stream_spans" in page for page in ordered_pages):
+        return _reading_stream_items(ordered_pages, include_references)
+    for index, page_record in enumerate(ordered_pages):
         page_number = int(page_record.get("page_number") or 0)
         extraction_method = str(page_record.get("extraction_method") or "")
         document_title = re.sub(r"\s+", "", normalize_space(str(page_record.get("title") or "")))
         buffer: list[str] = []
+        layout = page_record.get("layout")
+        next_is_layout = index + 1 < len(ordered_pages) and ordered_pages[index + 1].get("layout") is not None
+        block = None
 
         def flush_buffer() -> None:
             nonlocal carried_tail, carried_section
@@ -363,37 +444,45 @@ def section_sentence_items(
                 carried_section = ""
             sentences, carried_tail = split_complete_sentences(text)
             carried_section = current_section if carried_tail else ""
+            if (block or next_is_layout) and carried_tail:
+                # At a physical boundary retain the unfinished wording, never stitch or discard it.
+                sentences.append(carried_tail)
+                carried_tail = carried_section = ""
             for sentence in sentences:
                 sections.setdefault(current_section, []).append(
                     {
                         "text": sentence,
                         "page_number": page_number,
                         "extraction_method": extraction_method,
+                        **({"block_id": block["id"], "block_kind": block["kind"]} if block else {}),
                     }
                 )
             buffer.clear()
 
-        for raw_line in str(page_record.get("text") or "").splitlines():
-            raw_cleaned = clean_body_line(raw_line)
-            if not raw_cleaned:
+        for block in layout["blocks"] if layout is not None else [None]:
+            if block and block["kind"] == "table":
+                if not skip_references:
+                    sections.setdefault(current_section, []).append(dict(
+                        text="\n".join(l["text"] for l in block["lines"]), page_number=page_number,
+                        extraction_method=extraction_method, block_id=block["id"], block_kind="table",
+                    ))
                 continue
-            is_document_title = (
-                bool(document_title)
-                and re.sub(r"\s+", "", raw_cleaned).strip("\u300a\u300b[]") == document_title
-            )
-            line_parts = [(None, raw_cleaned)] if is_document_title else split_embedded_heading_line(raw_cleaned)
-            for heading, line in line_parts:
-                if heading:
-                    flush_buffer()
-                    # 一个未闭合尾句若恰好撞上新章节，不能跨章节强行拼接。
-                    carried_tail = ""
-                    carried_section = ""
-                    current_section = heading
-                    skip_references = heading == "\u53c2\u8003\u6587\u732e" and not include_references
+            lines = [l["text"] for l in block["lines"]] if block else page_record["text"].splitlines()
+            for raw_line in lines:
+                raw_cleaned = clean_body_line(raw_line)
+                if not raw_cleaned:
                     continue
-                if line and not skip_references:
-                    buffer.append(line)
-        flush_buffer()
+                is_title = bool(document_title) and re.sub(r"\s+", "", raw_cleaned).strip("《》[]") == document_title
+                parts = [(None, raw_cleaned)] if is_title else split_embedded_heading_line(raw_cleaned)
+                for heading, line in parts:
+                    if heading:
+                        flush_buffer()
+                        carried_tail = carried_section = ""
+                        current_section = heading
+                        skip_references = heading == "参考文献" and not include_references
+                    elif line and not skip_references:
+                        buffer.append(line)
+            flush_buffer()
 
     return OrderedDict((section, items) for section, items in sections.items() if items)
 
@@ -539,6 +628,15 @@ def ranges_from_boundaries(
 
 
 def range_text(start: int, end: int, items: list[dict[str, Any]]) -> str:
+    if end == start + 1 and items[start].get("block_kind") in {"table", "figure"}:
+        return items[start]["text"]
+    if "flow_id" in items[start]:
+        paragraphs = []
+        for item in items[start:end]:
+            if not paragraphs or item.get("paragraph_start"):
+                paragraphs.append([])
+            paragraphs[-1].append(item["text"])
+        return "\n\n".join(join_text_lines(lines) for lines in paragraphs)
     return join_text_lines([str(item["text"]) for item in items[start:end]])
 
 
@@ -654,6 +752,9 @@ def build_chunk_records(
     boundaries: Iterable[int],
     config: ChunkConfig,
     similarities: list[float] | None = None,
+    *,
+    parent_offset: int = 0,
+    chunk_offset: int = 0,
 ) -> list[dict[str, Any]]:
     if not items:
         return []
@@ -662,11 +763,19 @@ def build_chunk_records(
     smoothed_similarities = smooth_similarities(raw_similarities, config.smoothing_window)
     parent_ranges = ranges_from_boundaries(len(items), boundaries)
     parent_ranges = merge_short_parent_ranges(parent_ranges, items, smoothed_similarities, config)
+    # Legacy v1 block inputs retain their historical hard cuts. New streams have
+    # already been separated by logical flow before embedding, never by block id.
+    key = "flow_id" if "flow_id" in items[0] else "block_id"
+    locked = {i for i in range(1, len(items)) if items[i-1].get(key) != items[i].get(key)}
+    def segments(start, end):
+        cuts = [start, *sorted(i for i in locked if start < i < end), end]
+        return zip(cuts, cuts[1:])
+    parent_ranges = [pair for a, b in parent_ranges for pair in segments(a, b)]
 
     chunks: list[dict[str, Any]] = []
     document_id = str(document.get("document_id") or "CNKI-UNKNOWN")
-    chunk_index = 0
-    for parent_index, (parent_start, parent_end) in enumerate(parent_ranges, start=1):
+    chunk_index = chunk_offset
+    for parent_index, (parent_start, parent_end) in enumerate(parent_ranges, start=parent_offset+1):
         parent_text = range_text(parent_start, parent_end, items)
         parent_id = f"{document_id}::{section_id(section)}::P{parent_index:03d}"
         # 子块仅为检索粒度。即使单句超长也不再按字符拆开，避免半句话证据。
@@ -679,7 +788,7 @@ def build_chunk_records(
             chunk_index += 1
             selected = items[start:end]
             text = range_text(start, end, items)
-            pages = sorted({int(item["page_number"]) for item in selected})
+            pages = sorted({p for item in selected for p in item.get("page_numbers", [int(item["page_number"])])})
             methods = sorted({str(item["extraction_method"]) for item in selected if item.get("extraction_method")})
             score_slice = raw_similarities[start : max(start, end - 1)]
             chunks.append(
@@ -709,6 +818,10 @@ def build_chunk_records(
                 "page_start": pages[0] if pages else "",
                 "page_end": pages[-1] if pages else "",
                 "extraction_methods": methods,
+                **({"source_block_id": selected[0]["block_id"], "block_kind": selected[0]["block_kind"]}
+                   if "block_id" in selected[0] else {}),
+                **({"source_block_ids": list(dict.fromkeys(b for item in selected for b in item["block_ids"])),
+                    "block_kind": selected[0]["block_kind"]} if "flow_id" in selected[0] else {}),
                 "sentence_start": start + 1,
                 "sentence_end": end,
                 "sentence_count": end - start,
@@ -786,8 +899,11 @@ def chunk_page_records(
     for pages in documents.values():
         first = pages[0]
         sections = section_sentence_items(pages, include_references=config.include_references)
+        runs = []
         for section, items in sections.items():
-            work_items.append((first, section, items))
+            for _, group in groupby(items, key=lambda i: i.get("flow_id", 0)):
+                runs.append((first, section, list(group)))
+        work_items.extend(sorted(runs, key=lambda run: run[2][0].get("flow_id", 0)))
     if limit_groups is not None:
         work_items = work_items[:limit_groups]
 
@@ -801,6 +917,7 @@ def chunk_page_records(
 
     chunks: list[dict[str, Any]] = []
     manifest_rows: list[dict[str, Any]] = []
+    offsets = {}
     for index, (document, section, items) in enumerate(work_items, start=1):
         sentences = [str(item["text"]) for item in items]
         row = {
@@ -819,6 +936,8 @@ def chunk_page_records(
         try:
             similarities = compute_gap_similarities(sentences, encode, config.window_size)
             boundaries = choose_semantic_boundaries(sentences, similarities, config)
+            key = (document["document_id"], section)
+            parent_offset, chunk_offset = offsets.get(key, (0, 0))
             group_chunks = build_chunk_records(
                 document,
                 section,
@@ -826,7 +945,10 @@ def chunk_page_records(
                 boundaries,
                 config,
                 similarities,
+                parent_offset=parent_offset, chunk_offset=chunk_offset,
             )
+            offsets[key] = (parent_offset + len({c["parent_id"] for c in group_chunks}),
+                            chunk_offset + len(group_chunks))
             chunks.extend(group_chunks)
             row["similarity_gaps"] = len(similarities)
             row["semantic_boundaries"] = len(boundaries)

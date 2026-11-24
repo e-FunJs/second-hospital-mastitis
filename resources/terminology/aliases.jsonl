@@ -2,3 +2,5 @@
 {"alias":"nonlactational mastitis","concept_id":"DIS_NLM","language":"en","category":"disease","source":"orthographic_variant","confidence":1.0,"auto_replace":true}
 {"alias":"nonlactating mastitis","concept_id":"DIS_NLATING_M","language":"en","category":"disease","source":"orthographic_variant","confidence":1.0,"auto_replace":true}
 {"alias":"IGM","concept_id":"DIS_IGM","language":"en","category":"disease","source":"common_abbreviation","confidence":1.0,"auto_replace":false}
+{"alias":"肉芽肿性小叶乳腺炎","concept_id":"DIS_GLM","language":"zh","category":"disease","source":"trusted_manual","confidence":1.0,"auto_replace":true}
+{"alias":"强的松","concept_id":"DRUG_PREDNISONE","language":"zh","category":"drug","source":"trusted_manual","confidence":1.0,"auto_replace":true}

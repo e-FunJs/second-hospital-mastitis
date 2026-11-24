@@ -18,7 +18,7 @@
 
 说明：
     - 原始 PDF 始终只读，不删除、不移动、不覆盖。
-    - 优先使用 pdftotext；只有原生文字未通过质量门槛时才进入 OCR。
+    - 原生文字保留 PyMuPDF 版面区块；只有文字未通过质量门槛时才进入 OCR。
     - DeepSeek-OCR-2 是默认 OCR 后端，在独立 hospital-ocr 环境中批量运行；
       原有 Tesseract OCR 实现完整保留，可通过 --ocr-backend tesseract 使用。
     - 页面文字写出前会清理可明确识别的文章属性、页眉页脚和页码，
@@ -42,8 +42,10 @@ import time
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict, dataclass
+from itertools import groupby
 from datetime import datetime, timezone
 from pathlib import Path
+from threading import Lock
 from typing import Any, Iterable
 
 import numpy as np
@@ -270,11 +272,14 @@ def clean_article_page_text(record: dict[str, Any], *, is_first_page: bool) -> N
 
     if is_first_page and title_key:
         for index, line in enumerate(lines):
-            if text_comparison_key(line) == title_key:
+            # A typeset title may wrap. Match the *entire* known title, never a fuzzy prefix.
+            n = next((n for n in range(1, min(4, len(lines)-index)+1)
+                      if text_comparison_key("".join(lines[index:index+n])) == title_key), 0)
+            if n:
                 if index:
                     removed_categories["preceding_article"] += index
-                lines = lines[index + 1 :]
-                removed_categories["document_title"] += 1
+                lines = lines[index + n :]
+                removed_categories["document_title"] += n
                 break
 
     # 乱码作者行只可能位于首页标题与摘要之间；不在表格、结果段落中应用此规则。
@@ -321,8 +326,11 @@ def truncate_following_article_pages(page_records: list[dict[str, Any]]) -> None
     """
 
     article_finished = False
-    for record in page_records:
+    for i, record in enumerate(page_records):
         lines = [line for line in str(record.get("text") or "").splitlines() if line.strip()]
+        if i == 0 and record.get("layout") and not record["cleaning_removed_categories"].get("document_title"):
+            # On a shared first page, the next title after references can be our own.
+            continue
         if article_finished:
             add_cleaning_audit(record, "following_article_page", len(lines))
             record["text"] = ""
@@ -489,12 +497,242 @@ def split_pdftotext_pages(raw_text: str, page_count: int) -> list[str]:
     return pages
 
 
-def extract_native_pages(pdf_path: Path, page_count: int, tools: PdfTools) -> list[str]:
-    result = run_command(
-        [tools.pdftotext, "-layout", "-enc", "UTF-8", str(pdf_path), "-"],
-        max(tools.timeout_seconds, page_count * 3),
-    )
-    return split_pdftotext_pages(result.stdout, page_count)
+LAYOUT_VERSION = "cn-reading-stream-v2"
+_PDF_LOCK = Lock()
+_EMBEDDED_LINE_BREAKS = str.maketrans(dict.fromkeys("\n\r\v\f\x1c\x1d\x1e\x85\u2028\u2029", " "))
+
+
+def normalize_pdf_visual_line(text: str) -> str:
+    # Geometry defines this as one line. Never let an embedded glyph create a
+    # second line (or a fake layout separator) during plain-text cleaning.
+    return normalize_line(text.translate(_EMBEDDED_LINE_BREAKS))
+
+
+def _gutter(lines, width):
+    """Require simultaneous left and right text, not just short lines near the margin."""
+    best, cut = (0, 0), None
+    for percent in range(42, 59):
+        x = width * percent / 100
+        left = [r for r, _ in lines if r.width > .17 * width and x - .13 * width < r.x1 <= x]
+        right = [r for r, _ in lines if r.width > .17 * width and x <= r.x0 < x + .13 * width]
+        matched = sum(any(abs(a.y0 - b.y0) <= max(a.height, b.height) for b in right) for a in left)
+        score = (min(matched, len(right)), -abs(percent - 50))
+        if score[0] >= 3 and score > best:
+            best, cut = score, x
+    return cut
+
+
+def native_layout(page):
+    import pymupdf as mu
+
+    # Work in the unrotated coordinate space returned by get_text / find_tables.
+    width, height = page.cropbox.width, page.cropbox.height
+    lines, origin = [], {}
+    for block in page.get_text("dict", flags=mu.TEXTFLAGS_DICT & ~mu.TEXT_PRESERVE_IMAGES)["blocks"]:
+        for line in block.get("lines", []):
+            text = normalize_pdf_visual_line("".join(span["text"] for span in line["spans"]))
+            if text:
+                lines.append((mu.Rect(line["bbox"]), text))
+                origin[tuple(line["bbox"])] = block["number"]
+    # A table stays in its own lane unless its bounding box actually spans both.
+    boxes = [mu.Rect(t.bbox) for t in page.find_tables().tables
+             if t.row_count >= 2 and t.col_count >= 2] if lines else []
+    kinds = ["table"] * len(boxes)
+    # Keep a captioned vector diagram as one object, not dozens of prose paragraphs.
+    captions = [r for r, t in lines if re.match(r"^图(?:\s*\d|$)", t)]
+    if captions:
+        for box in sorted(page.cluster_drawings(), key=lambda r: -r.get_area()):
+            if (box.width >= .24 * width and box.height >= .065 * height
+                    and any(-8 <= c.y0 - box.y1 <= 60 and box.x0-30 <= c.x0 <= box.x1+30 for c in captions)
+                    and not any((b & box).get_area() > .3 * min(b.get_area(), box.get_area()) for b in boxes)):
+                boxes.append(box)
+                kinds.append("figure")
+    units, tables = [], [[] for _ in boxes]
+    for rect, text in lines:
+        center = (rect.tl + rect.br) * .5
+        owner = next((i for i, box in enumerate(boxes) if center in box
+                      and (rect & box).width >= .8 * rect.width), None)
+        if owner is None:
+            units.append((rect, "body", [(rect, text)]))
+        else:
+            tables[owner].append((rect, text))
+    # Reassemble touching glyph runs *before* detecting a gutter. A font change
+    # in a wide abstract can split it into apparent left-, center-, and right-hand lines.
+    physical_rows = []
+    for rect, _, parts in sorted(units, key=lambda u: u[0].y0):
+        row = next((row for row in reversed(physical_rows[-4:])
+                    if abs((row[0].y0+row[0].y1-rect.y0-rect.y1)/2)
+                    < .36 * min(rect.height, row[0].height)), None)
+        if row is None:
+            physical_rows.append((rect, list(parts)))
+        else:
+            row[1].extend(parts)
+    wide = [r for r, _, _ in units if r.x0 < .32 * width and r.x1 > .68 * width]
+    units = []
+    for _, row in physical_rows:
+        row_start = len(units)
+        for rect, text in sorted(row, key=lambda item: item[0].x0):
+            if len(units) > row_start:
+                prev, _, parts = units[-1]
+                gap = rect.x0 - prev.x1
+                same_wide_line = (origin.get(tuple(prev)) == origin[tuple(rect)]
+                                  and any(abs(w.y0 - rect.y0) < 3.4 * rect.height for w in wide))
+                if -.95 * rect.height < gap < (1.05 if same_wide_line else .43) * min(rect.height, prev.height):
+                    merged = prev | rect
+                    origin[tuple(merged)] = origin[tuple(rect)]
+                    # No artificial space inside a number/word when glyph runs touch.
+                    sep = " " if gap > .12 * rect.height else ""
+                    units[-1] = (merged, "body", [(merged, parts[0][1] + sep + text)])
+                    continue
+            units.append((rect, "body", [(rect, text)]))
+    cut = _gutter([(u[0], "") for u in units], width)
+    for kind, box, cells in zip(kinds, boxes, tables):
+        if cells:
+            units.append((box, kind, sorted(cells, key=lambda c: (round(c[0].y0 / 3), c[0].x0))))
+
+    def lane(rect):
+        if cut is None:
+            return "single"
+        if rect.x0 < cut - 2 and rect.x1 > cut + 2:
+            return "full"
+        return "left" if (rect.x0 + rect.x1) / 2 < cut else "right"
+
+    blocks = []
+    for band, (_, band_units) in enumerate(groupby(sorted(units, key=lambda u: (u[0].y0, u[0].x0)),
+                                                   key=lambda u: lane(u[0]) == "full")):
+        ordered = sorted(band_units, key=lambda u: (lane(u[0]), u[0].y0, u[0].x0))
+        # A superscript, number or change of font may split one printed line into
+        # several PDF lines. Reassemble only close horizontal neighbors in this lane.
+        rows = []
+        for rect, kind, parts in ordered:
+            if rows and kind == rows[-1][1] == "body" and lane(rect) == lane(rows[-1][0]):
+                prev, _, pieces = rows[-1]
+                overlap = min(rect.y1, prev.y1) - max(rect.y0, prev.y0)
+                gap = max(rect.x0 - prev.x1, prev.x0 - rect.x1)
+                if overlap > .28 * min(rect.height, prev.height) and -3 <= gap <= 2 * max(rect.height, prev.height):
+                    rows[-1] = (prev | rect, kind, pieces + parts)
+                    continue
+            rows.append((rect, kind, parts))
+        last = None
+        for rect, kind, contents in rows:
+            column = lane(rect)
+            if kind == "body" and len(contents) > 1:
+                contents = [(rect, " ".join(t for _, t in sorted(contents, key=lambda p: p[0].x0)))]
+            # Only neighboring visual lines in the same text flow may form a paragraph.
+            if not (last and kind == "body" and blocks[-1]["kind"] == kind
+                    and blocks[-1]["column"] == column
+                    and -.5 * rect.height < rect.y0 - last.y1 < max(6, .9 * rect.height)):
+                blocks.append(dict(id=f"p{page.number+1}b{len(blocks)+1}", kind=kind,
+                                   column=column, band=band, lines=[], bbox=list(rect)))
+            block = blocks[-1]
+            block["bbox"] = list(mu.Rect(block["bbox"]) | rect)
+            block["lines"].extend(dict(bbox=list(r), text=t) for r, t in contents)
+            last = rect
+    return dict(width=width, height=height, gutter=cut, blocks=blocks)
+
+
+def layout_text(layout):
+    return "\n".join(line["text"] for block in layout["blocks"] for line in block["lines"])
+
+
+def reading_stream(layout):
+    """Text is authoritative; the offset map is for tracing lines, not cutting chunks."""
+    pieces, spans, pos = [], [], 0
+    previous = None
+    for block in layout["blocks"]:
+        body = block["kind"] == "body"
+        for n, line in enumerate(block["lines"]):
+            text = line["text"]
+            gap = ""
+            if previous:
+                old_block, old = previous
+                if not body or old_block["kind"] != "body":
+                    gap = "\n" if n and not body else "\x1e"
+                else:
+                    x, y, _, bottom = line["bbox"]
+                    height = max(1, bottom - y)
+                    same_lane = old_block["column"] == block["column"]
+                    indent = x - old["bbox"][0]
+                    paragraph = (same_lane and y > old["bbox"][1] and
+                                 (y-old["bbox"][3] > height or
+                                  (indent > .9*height and re.search(r"[。！？.!?][”）)]?$", old["text"]))))
+                    # Full-width Latin letters are common in English abstracts in Chinese PDFs.
+                    latin_wrap = all(c.isascii() or "！" <= c <= "～" for c in (old["text"][-1], text[0]))
+                    gap = "\n\n" if paragraph else (" " if latin_wrap else "")
+            pieces.extend((gap, text))
+            pos += len(gap)
+            spans.append([pos, pos + len(text), block["id"], block["kind"]])
+            pos += len(text)
+            previous = block, line
+    return "".join(pieces), spans
+
+
+def extract_layout_pages(pdf_path: Path, page_count: int) -> list[dict]:
+    import pymupdf
+
+    # CLI workers use threads; MuPDF document access is not thread-safe.
+    with _PDF_LOCK, pymupdf.open(pdf_path) as document:
+        if len(document) != page_count:
+            raise ValueError(f"PDF page count mismatch: {pdf_path}")
+        return [native_layout(page) for page in document]
+
+
+def _clean_layout_pages(records):
+    """Run existing article-boundary cleaning, protecting tables from page-number filters."""
+    def is_margin(line, height):
+        return line["bbox"][3] < height * .055 or line["bbox"][1] > height * .945
+
+    counts = Counter()
+    for record in records:
+        layout = record.get("layout")
+        if layout:
+            counts.update({normalized_header_key(l["text"]) for b in layout["blocks"] if b["kind"] == "body"
+                           for l in b["lines"] if is_margin(l, layout["height"])})
+    for record in records:
+        layout = record.get("layout")
+        if layout is None:
+            continue
+        for b in layout["blocks"]:
+            if b["kind"] == "body":
+                b["lines"] = [l for l in b["lines"] if not (
+                    is_margin(l, layout["height"]) and not re.search(r"[。！？!?；;]", l["text"])
+                    and len(l["text"]) <= 80 and counts[normalized_header_key(l["text"])]
+                    >= max(3, int(len(records) * .30 + .999)))]
+        # A table is opaque to the existing text cleaners (including all-numeric rows).
+        record["text"] = "\n".join(text for b in layout["blocks"] for text in
+                                   ([f"[TABLE:{b['id']}。]"] if b["kind"] != "body"
+                                    else [l["text"] for l in b["lines"]]))
+    clean_article_pages(records)
+    truncate_following_article_pages(records)
+    remove_repeated_marginal_lines([r for r in records if r.get("layout") is None])
+    for record in records:
+        layout = record.get("layout")
+        if layout is None:
+            continue
+        retained = iter(record["text"].splitlines())
+        target = next(retained, None)
+        skip = record["cleaning_removed_categories"].get("preceding_article", 0)
+        skip += record["cleaning_removed_categories"].get("document_title", 0)
+        kept = []
+        for block in layout["blocks"]:
+            lines = []
+            table = block["kind"] != "body"
+            for line in ([None] if table else block["lines"]):
+                if skip:
+                    skip -= 1
+                    continue
+                value = f"[TABLE:{block['id']}。]" if table else line["text"]
+                if value == target:
+                    lines.extend(block["lines"] if table else [line])
+                    target = next(retained, None)
+            if lines:
+                kept.append({**block, "lines": lines})
+        if target is not None:
+            raise ValueError(f"cleaned text cannot be mapped to blocks on page {record['page_number']}")
+        layout["blocks"] = kept
+        record["text"], record["stream_spans"] = reading_stream(layout)
+        record["text_char_count"] = content_char_count(record["text"])
+        record["cjk_char_count"] = cjk_char_count(record["text"])
 
 
 def dense_horizontal_bands(pixels: np.ndarray, config: ParseConfig) -> list[tuple[int, int]]:
@@ -769,6 +1007,7 @@ def cache_is_complete(cache_path: Path, document_id: str, page_count: int) -> bo
         return False
     return (
         len(records) == page_count
+        and all(r.get("layout_version") == LAYOUT_VERSION for r in records)
         and all(record.get("document_id") == document_id for record in records)
         and [record.get("page_number") for record in records] == list(range(1, page_count + 1))
     )
@@ -801,7 +1040,7 @@ def run_deepseek_ocr_batch(
             cache_path = cache_dir / f"{document_id}.jsonl"
             if not overwrite and cache_is_complete(cache_path, document_id, page_count):
                 continue
-            native_pages = extract_native_pages(pdf_path, page_count, tools)
+            native_pages = [layout_text(v) for v in extract_layout_pages(pdf_path, page_count)]
         except Exception as exc:  # noqa: BLE001 - 正式解析阶段仍会按文献记录该错误。
             print(
                 f"DeepSeek OCR planning skipped {pdf_path.name}: "
@@ -926,7 +1165,7 @@ def parse_document(
         cached = read_jsonl(cache_path)
         return cached, result_from_cached_records(document_id, title, source_path, cached)
 
-    native_pages = extract_native_pages(pdf_path, page_count, tools)
+    layouts = extract_layout_pages(pdf_path, page_count)
     page_records: list[dict[str, Any]] = []
     result = DocumentResult(
         document_id=document_id,
@@ -935,7 +1174,8 @@ def parse_document(
         page_count=page_count,
     )
 
-    for page_number, native_text in enumerate(native_pages, start=1):
+    for page_number, layout in enumerate(layouts, start=1):
+        native_text = layout_text(layout)
         use_native = native_text_is_usable(native_text, config)
         should_ocr = config.ocr_mode == "always" or (
             config.ocr_mode == "auto" and not use_native
@@ -979,6 +1219,8 @@ def parse_document(
                 "page_number": page_number,
                 "page_count": page_count,
                 "extraction_method": method,
+                "layout_version": LAYOUT_VERSION,
+                "layout": None if should_ocr else layout,
                 "ocr_backend": ocr_backend,
                 "native_text_char_count": content_char_count(native_text),
                 "ocr_preprocess_removed_dense_bands": removed_dense_bands,
@@ -995,9 +1237,7 @@ def parse_document(
         )
 
     # 先去除每页可明确识别的文章属性，再处理跨页重复的页眉页脚。
-    clean_article_pages(page_records)
-    truncate_following_article_pages(page_records)
-    remove_repeated_marginal_lines(page_records)
+    _clean_layout_pages(page_records)
     for record in page_records:
         record["low_text"] = int(record["text_char_count"]) < config.min_output_chars
     result.native_pages = sum(
@@ -1236,7 +1476,6 @@ def main(argv: list[str] | None = None) -> int:
 
     tools = PdfTools(timeout_seconds=args.timeout)
     require_binary(tools.pdfinfo, "PDF page count")
-    require_binary(tools.pdftotext, "PDF native text extraction")
     if args.ocr != "never":
         require_binary(tools.pdftoppm, "PDF page rendering")
         if args.ocr_backend == "tesseract":

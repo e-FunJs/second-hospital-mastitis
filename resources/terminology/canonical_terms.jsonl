@@ -40,3 +40,20 @@
 {"concept_id":"DRUG_PREDNISOLONE","canonical":"泼尼松龙","language":"zh","category":"drug","source":"project_scope","confidence":1.0}
 {"concept_id":"DRUG_COLCHICINE","canonical":"秋水仙碱","language":"zh","category":"drug","source":"project_scope","confidence":1.0}
 {"concept_id":"DRUG_TAMOXIFEN","canonical":"他莫昔芬","language":"zh","category":"drug","source":"project_scope","confidence":1.0}
+{"concept_id":"DRUG_AMOXICILLIN","canonical":"阿莫西林","language":"zh","category":"drug","source":"trusted_manual","confidence":1.0}
+{"concept_id":"DRUG_AMOXICILLIN","canonical":"amoxicillin","language":"en","category":"drug","source":"trusted_manual","confidence":1.0}
+{"concept_id":"DRUG_AZITHROMYCIN","canonical":"阿奇霉素","language":"zh","category":"drug","source":"trusted_manual","confidence":1.0}
+{"concept_id":"DRUG_AZITHROMYCIN","canonical":"azithromycin","language":"en","category":"drug","source":"trusted_manual","confidence":1.0}
+{"concept_id":"DRUG_LEVOFLOXACIN","canonical":"左氧氟沙星","language":"zh","category":"drug","source":"trusted_manual","confidence":1.0}
+{"concept_id":"DRUG_LEVOFLOXACIN","canonical":"levofloxacin","language":"en","category":"drug","source":"trusted_manual","confidence":1.0}
+{"concept_id":"DRUG_DEXAMETHASONE","canonical":"地塞米松","language":"zh","category":"drug","source":"trusted_manual","confidence":1.0}
+{"concept_id":"DRUG_DEXAMETHASONE","canonical":"dexamethasone","language":"en","category":"drug","source":"trusted_manual","confidence":1.0}
+{"concept_id":"DRUG_GENTAMICIN","canonical":"庆大霉素","language":"zh","category":"drug","source":"trusted_manual","confidence":1.0}
+{"concept_id":"DRUG_GENTAMICIN","canonical":"gentamicin","language":"en","category":"drug","source":"trusted_manual","confidence":1.0}
+{"concept_id":"DRUG_METHYLPREDNISOLONE","canonical":"甲泼尼龙","language":"zh","category":"drug","source":"trusted_manual","confidence":1.0}
+{"concept_id":"DRUG_METHYLPREDNISOLONE","canonical":"methylprednisolone","language":"en","category":"drug","source":"trusted_manual","confidence":1.0}
+{"concept_id":"DRUG_MOXIFLOXACIN","canonical":"莫西沙星","language":"zh","category":"drug","source":"trusted_manual","confidence":1.0}
+{"concept_id":"DRUG_MOXIFLOXACIN","canonical":"moxifloxacin","language":"en","category":"drug","source":"trusted_manual","confidence":1.0}
+{"concept_id":"DRUG_RUYONG_SANJIE_TANG","canonical":"乳痈散结汤","language":"zh","category":"drug","source":"trusted_manual","confidence":1.0}
+{"concept_id":"DRUG_CHAIHU_SHUGAN_SAN","canonical":"柴胡疏肝散","language":"zh","category":"drug","source":"trusted_manual","confidence":1.0}
+{"concept_id":"DRUG_CHAIHU_SHUGAN_SAN","canonical":"Chaihu Shugan powder","language":"en","category":"drug","source":"trusted_manual","confidence":1.0}

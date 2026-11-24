@@ -1,7 +1,7 @@
 """
 用途：执行第一层 RAG，检索并重排中英文证据。
 输入：用户问题、固定的中文/英文 strict FAISS index、chunk_metadata.jsonl、模型配置。
-输出：默认 data/rag/answers/bilingual/*_evidence.json、retrieval trace 及 query plan。
+输出：默认 data/rag/answers/bilingual/*_evidence.json、retrieval trace、query plan 及 R1 上下文。
 说明：本文件不再构造 prompt；证据先由 step09 清洗，再由 step10 构造报告 prompt。
 """
 
@@ -24,6 +24,9 @@ import faiss
 import yaml
 
 from rag_medical.common.expansion.aliases import load_aliases
+from rag_medical.common.expansion.chunk_layer import load_chunk_layer_index
+from rag_medical.common.expansion.context_expand import expand_evidence_context
+from rag_medical.common.expansion.context_expand_io import write_context_expanded
 from rag_medical.common.expansion.models import QueryRecord, RetrievalStage
 from rag_medical.common.expansion.query_expand import build_query_plan
 from rag_medical.common.expansion.query_plan_io import write_query_plan
@@ -34,8 +37,30 @@ from rag_medical.common.step06_search_chunks import (
     build_search_results,
     encode_query,
     load_sentence_transformer,
+    rerank_hits,
     search_index,
 )
+
+
+_PROJECT_ROOT = Path(__file__).resolve().parents[3]
+_CONTEXT_STRICT_PATHS = (
+    _PROJECT_ROOT / "data/articles/processed/chinese/filtered/rag_chunks_strict.jsonl",
+    _PROJECT_ROOT / "data/articles/processed/english/filtered/rag_chunks_strict.jsonl",
+)
+_CONTEXT_REVIEW_PATHS = (
+    _PROJECT_ROOT / "data/articles/processed/chinese/filtered/rag_chunks_review.jsonl",
+    _PROJECT_ROOT / "data/articles/processed/english/filtered/rag_chunks_review.jsonl",
+)
+_CONTEXT_EXCLUDED_PATHS = (
+    _PROJECT_ROOT / "data/articles/processed/chinese/filtered/rag_chunks_excluded.jsonl",
+    _PROJECT_ROOT / "data/articles/processed/english/filtered/rag_chunks_excluded.jsonl",
+)
+_CONTEXT_METADATA_PATHS = (
+    _PROJECT_ROOT / "data/index/chinese/strict/chunk_metadata.jsonl",
+    _PROJECT_ROOT / "data/index/english/strict/chunk_metadata.jsonl",
+)
+_CONTEXT_TOKENIZER_PATH = _PROJECT_ROOT / "models/llm/qwen3-8b"
+_CONTEXT_MAX_TOKENS = 512
 
 
 # -----------------------------------------------------------------------------
@@ -195,6 +220,66 @@ def _try_write_query_plan(
         return None
 
 
+def _load_context_metadata() -> dict[str, dict[str, Any]]:
+    """加载中英文 strict metadata，并拒绝空 ID 或跨索引 ID 冲突。"""
+    metadata_by_id: dict[str, dict[str, Any]] = {}
+    for metadata_path in _CONTEXT_METADATA_PATHS:
+        for record in read_metadata_jsonl(metadata_path):
+            chunk_id = str(record.get("chunk_id") or "").strip()
+            if not chunk_id:
+                raise ValueError(f"empty chunk_id in {metadata_path}")
+            if chunk_id in metadata_by_id:
+                raise ValueError(f"duplicate chunk_id across metadata: {chunk_id}")
+            metadata_by_id[chunk_id] = record
+    return metadata_by_id
+
+
+def _load_context_tokenizer() -> Any:
+    """只加载本地 Qwen tokenizer，不加载生成模型权重。"""
+    from transformers import AutoTokenizer
+
+    return AutoTokenizer.from_pretrained(
+        str(_CONTEXT_TOKENIZER_PATH),
+        local_files_only=True,
+        trust_remote_code=True,
+    )
+
+
+def _try_write_context_expanded(
+    evidence_records: list[dict[str, Any]],
+    output_dir: Path,
+    query_slug: str,
+) -> Path | None:
+    """独立生成 R1 上下文；失败不影响 evidence、trace 或 query plan。"""
+    try:
+        layer_index = load_chunk_layer_index(
+            strict_paths=_CONTEXT_STRICT_PATHS,
+            review_paths=_CONTEXT_REVIEW_PATHS,
+            excluded_paths=_CONTEXT_EXCLUDED_PATHS,
+        )
+        metadata_by_id = _load_context_metadata()
+        tokenizer = _load_context_tokenizer()
+        token_counter = lambda text: len(tokenizer.encode(text, add_special_tokens=False))
+        contexts = [
+            expand_evidence_context(
+                {
+                    "evidence_id": evidence["evidence_id"],
+                    "chunk_id": evidence["chunk_id"],
+                    "matched_text": evidence["matched_text"],
+                },
+                layer_index,
+                metadata_by_id,
+                max_tokens=_CONTEXT_MAX_TOKENS,
+                token_counter=token_counter,
+            )
+            for evidence in evidence_records
+        ]
+        return write_context_expanded(contexts, output_dir, query_slug)
+    except Exception as exc:
+        logging.warning("context expansion generation failed: %s", exc, exc_info=True)
+        return None
+
+
 # -----------------------------------------------------------------------------
 # 检索编排
 # -----------------------------------------------------------------------------
@@ -221,16 +306,7 @@ def retrieve_evidence(
 
     # BGE-M3 负责扩大召回；reranker 只比较问题与实际命中的子块正文。
     # 先重排、后扩展父块，可避免父块中的无关内容反过来影响相关性判断。
-    pairs = [
-        (question, str(metadata_records[int(hit["row_index"])].get("text") or ""))
-        for hit in hits
-    ]
-    rerank_scores = reranker.predict(pairs, show_progress_bar=False)
-    for hit, rerank_score in zip(hits, rerank_scores):
-        hit["dense_score"] = float(hit["score"])
-        hit["rerank_score"] = float(rerank_score)
-        hit["score"] = float(rerank_score)
-    hits = sorted(hits, key=lambda item: item["rerank_score"], reverse=True)[:top_k]
+    hits = rerank_hits(question, hits, metadata_records, reranker, top_k)
 
     search_results = build_search_results(hits, metadata_records, context_max_units)
     for result, hit in zip(search_results, hits):
@@ -449,6 +525,7 @@ def main(argv: list[str] | None = None) -> int:
         query_metadata,
     )
     _try_write_query_plan(args.question, args.output_dir, query_slug)
+    _try_write_context_expanded(evidence_records, args.output_dir, query_slug)
 
     print(f"evidence_count={len(evidence_records)}")
     print(f"chinese_query={chinese_question}")

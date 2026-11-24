@@ -1,7 +1,7 @@
 """
 用途：对 XML 解析出的段落做语义分块，生成适合 RAG 检索的 chunk。
 输入：data/articles/processed/english/article_sections.jsonl 与 BGE embedding 模型。
-输出：article_chunks.jsonl 与 chunk_manifest.csv。
+输出：article_chunks.jsonl、chunk_manifest.csv 与 chunk_id_mapping.jsonl。
 说明：用相邻句群 embedding 相似度寻找话题边界，不是简单按固定字符切分。
 """
 
@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
 import math
 import re
@@ -176,6 +177,33 @@ def safe_chunk_id_part(value: str) -> str:
     return cleaned[:80] or "section"
 
 
+def resolve_section_ids(
+    group_keys: Iterable[tuple[str, str]],
+) -> tuple[dict[tuple[str, str], str], int]:
+    """为章节生成稳定 ID，只给实际发生截断碰撞的组增加哈希后缀。"""
+
+    sections_by_base_id: dict[tuple[str, str], list[str]] = {}
+    for pmcid, section in group_keys:
+        key = (pmcid, safe_chunk_id_part(section))
+        sections_by_base_id.setdefault(key, []).append(section)
+
+    resolved: dict[tuple[str, str], str] = {}
+    collision_groups = 0
+    for (pmcid, base_id), sections in sections_by_base_id.items():
+        unique_sections = sorted(set(sections))
+        if len(unique_sections) == 1:
+            resolved[(pmcid, unique_sections[0])] = base_id
+            continue
+
+        collision_groups += 1
+        for section in unique_sections:
+            normalized_section = normalize_space(section)
+            digest = hashlib.sha256(normalized_section.encode("utf-8")).hexdigest()[:8]
+            resolved[(pmcid, section)] = f"{base_id}--{digest}"
+
+    return resolved, collision_groups
+
+
 def sentence_items_from_records(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
     items: list[dict[str, Any]] = []
     for record in sorted(records, key=lambda row: int(row.get("paragraph_index") or 0)):
@@ -258,6 +286,7 @@ def build_chunk_records(
     boundary_after_sentence_indices: Iterable[int],
     config: ChunkConfig | None = None,
     semantic_scores: list[float] | None = None,
+    section_id_value: str | None = None,
 ) -> list[dict[str, Any]]:
     if not records:
         return []
@@ -267,53 +296,70 @@ def build_chunk_records(
         return []
 
     effective_config = config or ChunkConfig(min_words=0, max_words=10_000)
-    ranges = ranges_from_boundaries(len(sentence_items), boundary_after_sentence_indices)
-    ranges = merge_short_ranges(ranges, sentence_items, effective_config)
-
-    final_ranges: list[tuple[int, int]] = []
-    for start, end in ranges:
-        text = " ".join(item["text"] for item in sentence_items[start:end])
-        if word_count(text) > effective_config.max_words:
-            final_ranges.extend(split_oversized_range(start, end, sentence_items, effective_config))
-        else:
-            final_ranges.append((start, end))
+    parent_ranges = ranges_from_boundaries(len(sentence_items), boundary_after_sentence_indices)
+    parent_ranges = merge_short_ranges(parent_ranges, sentence_items, effective_config)
 
     first = records[0]
     pmcid = str(first.get("pmcid") or "UNKNOWN")
     section = str(first.get("section") or "Body")
-    section_id = safe_chunk_id_part(section)
+    section_id = section_id_value or safe_chunk_id_part(section)
     chunks: list[dict[str, Any]] = []
 
-    for chunk_index, (start, end) in enumerate(final_ranges, start=1):
-        selected = sentence_items[start:end]
-        text = normalize_space(" ".join(item["text"] for item in selected))
-        paragraph_indices = sorted({int(item["paragraph_index"]) for item in selected})
-        score_slice = semantic_scores[start : max(start, end - 1)] if semantic_scores else []
-
-        chunks.append(
-            {
-                "chunk_id": f"{pmcid}::{section_id}::{chunk_index:03d}",
-                "pmcid": pmcid,
-                "pmid": first.get("pmid", ""),
-                "doi": first.get("doi", ""),
-                "title": first.get("title", ""),
-                "journal": first.get("journal", ""),
-                "year": first.get("year", ""),
-                "source_path": first.get("source_path", ""),
-                "language": "en",
-                "source_type": "pmc_full_text",
-                "section": section,
-                "chunk_index": chunk_index,
-                "source_paragraph_indices": paragraph_indices,
-                "sentence_start": start + 1,
-                "sentence_end": end,
-                "sentence_count": end - start,
-                "word_count": word_count(text),
-                "char_count": len(text),
-                "semantic_boundary_scores": [round(score, 6) for score in score_slice],
-                "text": text,
-            }
+    chunk_index = 0
+    for parent_index, (parent_start, parent_end) in enumerate(parent_ranges, start=1):
+        parent_text = normalize_space(
+            " ".join(item["text"] for item in sentence_items[parent_start:parent_end])
         )
+        parent_id = f"{pmcid}::{section_id}::P{parent_index:03d}"
+
+        # 父块保持原语义边界；只有父块过长时，才沿用原规则切成检索子块。
+        if word_count(parent_text) > effective_config.max_words:
+            child_ranges = split_oversized_range(parent_start, parent_end, sentence_items, effective_config)
+        else:
+            child_ranges = [(parent_start, parent_end)]
+        child_ids = [
+            f"{pmcid}::{section_id}::{chunk_index + offset:03d}"
+            for offset in range(1, len(child_ranges) + 1)
+        ]
+
+        for child_offset, (start, end) in enumerate(child_ranges):
+            chunk_index += 1
+            selected = sentence_items[start:end]
+            text = normalize_space(" ".join(item["text"] for item in selected))
+            paragraph_indices = sorted({int(item["paragraph_index"]) for item in selected})
+            score_slice = semantic_scores[start : max(start, end - 1)] if semantic_scores else []
+
+            chunks.append(
+                {
+                    "chunk_id": child_ids[child_offset],
+                    "pmcid": pmcid,
+                    "pmid": first.get("pmid", ""),
+                    "doi": first.get("doi", ""),
+                    "title": first.get("title", ""),
+                    "journal": first.get("journal", ""),
+                    "year": first.get("year", ""),
+                    "source_path": first.get("source_path", ""),
+                    "language": "en",
+                    "source_type": "pmc_full_text",
+                    "section": section,
+                    "chunk_index": chunk_index,
+                    "parent_id": parent_id,
+                    "parent_text": parent_text,
+                    "parent_sentence_start": parent_start + 1,
+                    "parent_sentence_end": parent_end,
+                    "parent_sentence_count": parent_end - parent_start,
+                    "previous_chunk_id": child_ids[child_offset - 1] if child_offset > 0 else "",
+                    "next_chunk_id": child_ids[child_offset + 1] if child_offset + 1 < len(child_ids) else "",
+                    "source_paragraph_indices": paragraph_indices,
+                    "sentence_start": start + 1,
+                    "sentence_end": end,
+                    "sentence_count": end - start,
+                    "word_count": word_count(text),
+                    "char_count": len(text),
+                    "semantic_boundary_scores": [round(score, 6) for score in score_slice],
+                    "text": text,
+                }
+            )
 
     return chunks
 
@@ -443,10 +489,12 @@ def chunk_records(
     config: ChunkConfig,
     batch_size: int,
     limit_groups: int | None = None,
-) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
     groups = group_by_article_section(records)
+    section_ids, collision_group_count = resolve_section_ids(groups.keys())
     all_chunks: list[dict[str, Any]] = []
     manifest_rows: list[dict[str, Any]] = []
+    id_mapping: list[dict[str, Any]] = []
 
     def encode(texts: list[str]):
         return model.encode(texts, batch_size=batch_size, normalize_embeddings=True, show_progress_bar=False)
@@ -473,8 +521,29 @@ def chunk_records(
         try:
             similarities = compute_gap_similarities(sentences, encode, config.window_size)
             boundaries = choose_semantic_boundaries(sentences, similarities, config)
-            chunks = build_chunk_records(group_records, boundaries, config, similarities)
+            section_id = section_ids[(pmcid, section)]
+            chunks = build_chunk_records(
+                group_records,
+                boundaries,
+                config,
+                similarities,
+                section_id_value=section_id,
+            )
             all_chunks.extend(chunks)
+            base_section_id = safe_chunk_id_part(section)
+            if section_id != base_section_id:
+                section_hash = section_id.rsplit("--", maxsplit=1)[-1]
+                for chunk in chunks:
+                    id_mapping.append(
+                        {
+                            "old_chunk_id": f"{pmcid}::{base_section_id}::{int(chunk['chunk_index']):03d}",
+                            "new_chunk_id": chunk["chunk_id"],
+                            "document_id": pmcid,
+                            "section": section,
+                            "section_hash": section_hash,
+                            "reason": "section_key_collision",
+                        }
+                    )
             row["similarity_gaps"] = len(similarities)
             row["semantic_boundaries"] = len(boundaries)
             row["chunks"] = len(chunks)
@@ -489,7 +558,9 @@ def chunk_records(
 
         manifest_rows.append(row)
 
-    return all_chunks, manifest_rows
+    if collision_group_count == 0 and id_mapping:
+        raise RuntimeError("chunk ID mapping exists without a detected collision group")
+    return all_chunks, manifest_rows, id_mapping
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -497,6 +568,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--input", type=Path, default=Path("data/articles/processed/english/article_sections.jsonl"))
     parser.add_argument("--out", type=Path, default=Path("data/articles/processed/english/article_chunks.jsonl"))
     parser.add_argument("--manifest", type=Path, default=Path("data/articles/processed/english/chunk_manifest.csv"))
+    parser.add_argument(
+        "--id-mapping",
+        type=Path,
+        default=Path("data/articles/processed/english/chunk_id_mapping.jsonl"),
+    )
     parser.add_argument("--model-path", type=Path, default=Path("models/bge/bge-m3"))
     parser.add_argument("--device", default="auto", choices=["auto", "cuda", "cpu"])
     parser.add_argument("--batch-size", type=int, default=16)
@@ -532,17 +608,20 @@ def main(argv: list[str] | None = None) -> int:
     device = resolve_device(args.device)
     records = read_jsonl(args.input)
     model = load_sentence_transformer(args.model_path, device)
-    chunks, manifest_rows = chunk_records(records, model, config, args.batch_size, args.limit_groups)
+    chunks, manifest_rows, id_mapping = chunk_records(records, model, config, args.batch_size, args.limit_groups)
 
     write_jsonl(args.out, chunks)
     write_manifest(args.manifest, manifest_rows)
+    write_jsonl(args.id_mapping, id_mapping)
 
     failed = sum(1 for row in manifest_rows if row.get("status") != "parsed")
     print(f"records={len(records)}")
     print(f"chunks={len(chunks)}")
     print(f"failed_groups={failed}")
+    print(f"id_mapping_records={len(id_mapping)}")
     print(f"out={args.out}")
     print(f"manifest={args.manifest}")
+    print(f"id_mapping={args.id_mapping}")
     return 0 if failed == 0 else 2
 
 

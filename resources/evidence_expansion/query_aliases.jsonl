@@ -1,4 +1,5 @@
 {"concept_id":"DIS_GLM","category":"disease","language":"zh","term":"肉芽肿性小叶性乳腺炎","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DIS_GLM","category":"disease","language":"zh","term":"肉芽肿性小叶乳腺炎","term_kind":"synonym","source":"trusted_manual"}
 {"concept_id":"DIS_GLM","category":"disease","language":"en","term":"granulomatous lobular mastitis","term_kind":"canonical","source":"trusted_manual"}
 {"concept_id":"DIS_GLM","category":"disease","language":"en","term":"GLM","term_kind":"abbreviation","source":"trusted_manual"}
 {"concept_id":"DIS_PDM","category":"disease","language":"zh","term":"导管周围乳腺炎","term_kind":"canonical","source":"trusted_manual"}
@@ -28,6 +29,24 @@
 {"concept_id":"DRUG_EMB","category":"drug","language":"en","term":"EMB","term_kind":"abbreviation","source":"trusted_manual"}
 {"concept_id":"DRUG_PRED","category":"drug","language":"zh","term":"泼尼松","term_kind":"canonical","source":"trusted_manual"}
 {"concept_id":"DRUG_PRED","category":"drug","language":"en","term":"prednisone","term_kind":"canonical","source":"trusted_manual"}
-{"concept_id":"DRUG_MTX","category":"drug","language":"zh","term":"甲氨蝶呆","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DRUG_MTX","category":"drug","language":"zh","term":"甲氨蝶呤","term_kind":"canonical","source":"trusted_manual"}
 {"concept_id":"DRUG_MTX","category":"drug","language":"en","term":"methotrexate","term_kind":"canonical","source":"trusted_manual"}
 {"concept_id":"DRUG_MTX","category":"drug","language":"en","term":"MTX","term_kind":"abbreviation","source":"trusted_manual"}
+{"concept_id":"DRUG_PRED","category":"drug","language":"zh","term":"强的松","term_kind":"synonym","source":"trusted_manual"}
+{"concept_id":"DRUG_AMOXICILLIN","category":"drug","language":"zh","term":"阿莫西林","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DRUG_AMOXICILLIN","category":"drug","language":"en","term":"amoxicillin","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DRUG_AZITHROMYCIN","category":"drug","language":"zh","term":"阿奇霉素","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DRUG_AZITHROMYCIN","category":"drug","language":"en","term":"azithromycin","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DRUG_LEVOFLOXACIN","category":"drug","language":"zh","term":"左氧氟沙星","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DRUG_LEVOFLOXACIN","category":"drug","language":"en","term":"levofloxacin","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DRUG_DEXAMETHASONE","category":"drug","language":"zh","term":"地塞米松","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DRUG_DEXAMETHASONE","category":"drug","language":"en","term":"dexamethasone","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DRUG_GENTAMICIN","category":"drug","language":"zh","term":"庆大霉素","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DRUG_GENTAMICIN","category":"drug","language":"en","term":"gentamicin","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DRUG_METHYLPREDNISOLONE","category":"drug","language":"zh","term":"甲泼尼龙","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DRUG_METHYLPREDNISOLONE","category":"drug","language":"en","term":"methylprednisolone","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DRUG_MOXIFLOXACIN","category":"drug","language":"zh","term":"莫西沙星","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DRUG_MOXIFLOXACIN","category":"drug","language":"en","term":"moxifloxacin","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DRUG_RUYONG_SANJIE_TANG","category":"drug","language":"zh","term":"乳痈散结汤","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DRUG_CHAIHU_SHUGAN_SAN","category":"drug","language":"zh","term":"柴胡疏肝散","term_kind":"canonical","source":"trusted_manual"}
+{"concept_id":"DRUG_CHAIHU_SHUGAN_SAN","category":"drug","language":"en","term":"Chaihu Shugan powder","term_kind":"canonical","source":"trusted_manual"}
