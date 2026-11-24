@@ -12,7 +12,7 @@ import json
 import re
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, Mapping, Sequence
 
 import faiss
 import numpy as np
@@ -62,6 +62,26 @@ def search_index(index: faiss.Index, query_embedding: np.ndarray, top_k: int) ->
             continue
         hits.append({"row_index": int(row_index), "score": float(score)})
     return hits
+
+
+def rerank_hits(
+    query_text: str,
+    hits: list[dict[str, Any]],
+    metadata_records: Sequence[Mapping[str, Any]],
+    reranker: Any,
+    top_k: int,
+) -> list[dict[str, Any]]:
+    """按现有 step08 规则重排稠密命中，并保留两类原始分数。"""
+    pairs = [
+        (query_text, str(metadata_records[int(hit["row_index"])].get("text") or ""))
+        for hit in hits
+    ]
+    rerank_scores = reranker.predict(pairs, show_progress_bar=False)
+    for hit, rerank_score in zip(hits, rerank_scores):
+        hit["dense_score"] = float(hit["score"])
+        hit["rerank_score"] = float(rerank_score)
+        hit["score"] = float(rerank_score)
+    return sorted(hits, key=lambda item: item["rerank_score"], reverse=True)[:top_k]
 
 
 def text_unit_count(text: str) -> int:

@@ -120,6 +120,11 @@ def row_to_chunks(row: dict[str, str], max_words: int) -> list[dict[str, Any]]:
     if not source_url and id_prefix == "PMID":
         source_url = f"https://pubmed.ncbi.nlm.nih.gov/{id_value}/"
 
+    parent_id = f"{id_prefix}{id_value}::Abstract::P001"
+    chunk_ids = [
+        f"{id_prefix}{id_value}::Abstract::{chunk_index:03d}"
+        for chunk_index in range(1, len(ranges) + 1)
+    ]
     chunks: list[dict[str, Any]] = []
     for chunk_index, (start, end) in enumerate(ranges, start=1):
         text = abstract_piece_text(sentences, start, end)
@@ -128,7 +133,7 @@ def row_to_chunks(row: dict[str, str], max_words: int) -> list[dict[str, Any]]:
 
         chunks.append(
             {
-                "chunk_id": f"{id_prefix}{id_value}::Abstract::{chunk_index:03d}",
+                "chunk_id": chunk_ids[chunk_index - 1],
                 "source_type": "pubmed_abstract",
                 "language": "en",
                 "pmcid": "",
@@ -141,6 +146,13 @@ def row_to_chunks(row: dict[str, str], max_words: int) -> list[dict[str, Any]]:
                 "source_url": source_url,
                 "section": "Abstract",
                 "chunk_index": chunk_index,
+                "parent_id": parent_id,
+                "parent_text": abstract,
+                "parent_sentence_start": 1,
+                "parent_sentence_end": len(sentences),
+                "parent_sentence_count": len(sentences),
+                "previous_chunk_id": chunk_ids[chunk_index - 2] if chunk_index > 1 else "",
+                "next_chunk_id": chunk_ids[chunk_index] if chunk_index < len(chunk_ids) else "",
                 "source_paragraph_indices": [1],
                 "sentence_start": start + 1,
                 "sentence_end": end,
